@@ -93,6 +93,31 @@ npm run deploy
 4. 添加更多Action Group
 5. 设置Agent协作
 
+## 本地测试
+
+部署完成后，您可以使用提供的测试脚本在本地测试您的Bedrock Agent。测试脚本位于`test`目录中。
+
+### 测试前准备
+
+1. 确保您已经成功部署了Agent
+2. 获取Agent别名ID（从部署输出或AWS控制台）
+3. 配置AWS凭证
+
+### 运行测试
+
+```bash
+cd test
+node test-agent.js YOUR_AGENT_ID YOUR_AGENT_ALIAS_ID
+```
+
+将`YOUR_AGENT_ID`替换为您的实际Agent ID，将`YOUR_AGENT_ALIAS_ID`替换为您的实际Agent别名ID。
+
+您可以从CDK部署输出或AWS控制台获取这些ID。Agent ID通常是一个以"agent/"开头的ARN的最后一部分，例如"arn:aws:bedrock:us-east-1:123456789012:agent/abcdef123456"中的"abcdef123456"。
+
+测试脚本将启动一个交互式会话，您可以与您的Agent进行对话。输入"exit"退出会话。
+
+有关更详细的测试说明，请参阅[测试文档](test/README.md)。
+
 ## 清理
 
 要删除部署的资源，请运行：

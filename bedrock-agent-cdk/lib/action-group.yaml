@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Library API",
+    "version": "1.0.0",
+    "description": "API for querying library books"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com",
+      "description": "Library API server"
+    }
+  ],
+  "paths": {
+    "/books": {
+      "get": {
+        "operationId": "getBooks",
+        "summary": "Get a list of books",
+        "description": "Returns a list of all books in the library",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of books",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "title", "author"],
+                    "properties": {
+                      "id": { 
+                        "type": "string",
+                        "description": "The unique identifier of the book"
+                      },
+                      "title": { 
+                        "type": "string",
+                        "description": "The title of the book"
+                      },
+                      "author": { 
+                        "type": "string",
+                        "description": "The author of the book"
+                      },
+                      "year": { 
+                        "type": "integer",
+                        "description": "The publication year"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "operationId": "getBookById",
+        "summary": "Get a book by ID",
+        "description": "Returns a single book by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the book",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved book details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "title", "author"],
+                  "properties": {
+                    "id": { 
+                      "type": "string",
+                      "description": "The unique identifier of the book"
+                    },
+                    "title": { 
+                      "type": "string",
+                      "description": "The title of the book"
+                    },
+                    "author": { 
+                      "type": "string",
+                      "description": "The author of the book"
+                    },
+                    "year": { 
+                      "type": "integer",
+                      "description": "The publication year"
+                    },
+                    "summary": { 
+                      "type": "string",
+                      "description": "Brief summary of the book"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Book not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}
