@@ -1,0 +1,91 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Financial Data API",
+    "version": "1.0.0",
+    "description": "API for querying financial data"
+  },
+  "paths": {
+    "/getStockPrice": {
+      "get": {
+        "operationId": "getStockPrice",
+        "summary": "获取股票价格",
+        "description": "返回指定股票的当前价格和历史价格数据",
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "description": "股票代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取股票价格数据"
+          },
+          "404": {
+            "description": "未找到股票"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/getFinancialStatements": {
+      "get": {
+        "operationId": "getFinancialStatements",
+        "summary": "获取财务报表",
+        "description": "返回指定股票的财务报表数据",
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "description": "股票代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取财务报表数据"
+          },
+          "404": {
+            "description": "未找到股票"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/getMarketSentiment": {
+      "get": {
+        "operationId": "getMarketSentiment",
+        "summary": "获取市场情绪",
+        "description": "返回指定股票的市场情绪数据",
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "description": "股票代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取市场情绪数据"
+          },
+          "404": {
+            "description": "未找到股票"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    }
+  }
+}
