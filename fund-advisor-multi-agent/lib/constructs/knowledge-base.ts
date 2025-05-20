@@ -26,7 +26,7 @@ export class FundKnowledgeBase extends Construct {
     });
 
     this.knowledgeBase = new bedrock.VectorKnowledgeBase(this, 'FinancialKnowledgeBase', {
-      embeddingsModel: bedrock.BedrockFoundationModel.TITAN_EMBED_TEXT_V1,
+      embeddingsModel: bedrock.BedrockFoundationModel.COHERE_EMBED_MULTILINGUAL_V3,
       instruction: '基金投资知识库，包含基金投资知识、市场数据和投资策略信息。',
     });
 

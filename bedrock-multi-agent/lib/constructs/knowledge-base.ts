@@ -27,7 +27,7 @@ export class FinancialKnowledgeBase extends Construct {
 
     // 创建金融知识库
     this.knowledgeBase = new bedrock.VectorKnowledgeBase(this, 'FinancialKnowledgeBase', {
-      embeddingsModel: bedrock.BedrockFoundationModel.TITAN_EMBED_TEXT_V1,
+      embeddingsModel: bedrock.BedrockFoundationModel.COHERE_EMBED_MULTILINGUAL_V3,
       instruction: '使用此知识库回答有关金融市场、公司财务数据和投资策略的问题。',
     });
 
