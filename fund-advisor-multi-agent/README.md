@@ -181,10 +181,8 @@ fund-advisor-multi-agent/
 * `npx cdk diff`    比较已部署堆栈与当前状态
 * `npx cdk synth`   生成CloudFormation模板
 
-## 扩展建议
+## User Guide
 
-1. 添加更多专业Agent，如税务规划专家、退休规划专家等
-2. 增强基金数据API，连接真实的基金数据源
-3. 添加投资组合回测功能，评估推荐组合的历史表现
-4. 实现定期监控功能，当基金表现异常时主动提醒用户
-5. 增加ESG（环境、社会和治理）分析维度，满足可持续投资需求
+- 本地执行报错403 forbidden
+  - 403 forbidden错误通常是由于权限不足导致的。请确保的docker登陆了aws ecr，并且有权限访问ECR仓库。
+  - 登录命令：`aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws`
