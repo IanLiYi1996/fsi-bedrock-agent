@@ -1,0 +1,190 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fund Data API",
+    "version": "1.0.0",
+    "description": "API for querying fund data"
+  },
+  "paths": {
+    "/getFundInfo": {
+      "get": {
+        "operationId": "getFundInfo",
+        "summary": "获取基金信息",
+        "description": "返回指定基金的基本信息",
+        "parameters": [
+          {
+            "name": "fundCode",
+            "in": "query",
+            "required": true,
+            "description": "基金代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取基金信息"
+          },
+          "404": {
+            "description": "未找到基金"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/getFundPerformance": {
+      "get": {
+        "operationId": "getFundPerformance",
+        "summary": "获取基金业绩",
+        "description": "返回指定基金的历史业绩数据",
+        "parameters": [
+          {
+            "name": "fundCode",
+            "in": "query",
+            "required": true,
+            "description": "基金代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取基金业绩数据"
+          },
+          "404": {
+            "description": "未找到基金"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/getFundHoldings": {
+      "get": {
+        "operationId": "getFundHoldings",
+        "summary": "获取基金持仓",
+        "description": "返回指定基金的持仓信息",
+        "parameters": [
+          {
+            "name": "fundCode",
+            "in": "query",
+            "required": true,
+            "description": "基金代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取基金持仓信息"
+          },
+          "404": {
+            "description": "未找到基金"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/getFundManager": {
+      "get": {
+        "operationId": "getFundManager",
+        "summary": "获取基金经理信息",
+        "description": "返回指定基金的基金经理信息",
+        "parameters": [
+          {
+            "name": "fundCode",
+            "in": "query",
+            "required": true,
+            "description": "基金代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取基金经理信息"
+          },
+          "404": {
+            "description": "未找到基金"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/getFundFees": {
+      "get": {
+        "operationId": "getFundFees",
+        "summary": "获取基金费用",
+        "description": "返回指定基金的费用结构",
+        "parameters": [
+          {
+            "name": "fundCode",
+            "in": "query",
+            "required": true,
+            "description": "基金代码",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取基金费用信息"
+          },
+          "404": {
+            "description": "未找到基金"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    },
+    "/searchFunds": {
+      "get": {
+        "operationId": "searchFunds",
+        "summary": "搜索基金",
+        "description": "根据条件搜索基金",
+        "parameters": [
+          {
+            "name": "fundType",
+            "in": "query",
+            "required": false,
+            "description": "基金类型（股票型、债券型、混合型、货币型等）",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "riskLevel",
+            "in": "query",
+            "required": false,
+            "description": "风险等级（低、中低、中、中高、高）",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "industry",
+            "in": "query",
+            "required": false,
+            "description": "行业主题（科技、医疗、消费等）",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "investmentHorizon",
+            "in": "query",
+            "required": false,
+            "description": "投资期限（短期、中期、长期）",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功搜索基金"
+          },
+          "500": {
+            "description": "内部服务器错误"
+          }
+        }
+      }
+    }
+  }
+}
