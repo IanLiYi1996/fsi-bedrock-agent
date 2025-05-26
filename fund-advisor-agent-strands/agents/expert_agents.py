@@ -6,7 +6,6 @@ import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from tools.fund_data import get_fund_info, get_fund_performance, get_fund_holdings, get_fund_manager, get_fund_fees
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +34,7 @@ def fund_strategy_expert(query: str) -> str:
         5. 选股策略的有效性和独特性
         
         你的分析应该客观、专业，并提供具体的数据支持。""",
-        tools=[get_fund_info, get_fund_performance, get_fund_holdings, get_fund_manager]
+        tools=[]
     )
     
     # 处理查询
@@ -67,7 +66,7 @@ def asset_allocation_expert(query: str) -> str:
         5. 基金与其他基金的互补性
         
         你的建议应该考虑投资者的整体资产配置需求，而不仅仅是单只基金的表现。""",
-        tools=[get_fund_info, get_fund_performance, get_fund_holdings]
+        tools=[]
     )
     
     # 处理查询
@@ -99,7 +98,7 @@ def market_trend_expert(query: str) -> str:
         5. 地缘政治和政策变化的潜在影响
         
         你的分析应该前瞻性，帮助投资者理解市场环境变化对基金表现的影响。""",
-        tools=[get_fund_info, get_fund_performance, get_fund_holdings]
+        tools=[]
     )
     
     # 处理查询

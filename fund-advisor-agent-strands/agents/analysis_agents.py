@@ -6,7 +6,6 @@ import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from tools.fund_data import get_fund_info, get_fund_performance, get_fund_holdings, get_fund_manager, get_fund_fees
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +34,7 @@ def performance_analyst(query: str) -> str:
         5. 基金在不同市场环境下的表现一致性
         
         你的分析应该客观、全面，并提供具体的数据支持。""",
-        tools=[get_fund_info, get_fund_performance]
+        tools=[]
     )
     
     # 处理查询
@@ -67,7 +66,7 @@ def holdings_analyst(query: str) -> str:
         5. 持仓变动趋势及其反映的投资策略变化
         
         你的分析应该深入、专业，帮助投资者理解基金的实际投资方向和风格。""",
-        tools=[get_fund_info, get_fund_holdings]
+        tools=[]
     )
     
     # 处理查询
@@ -99,7 +98,7 @@ def manager_analyst(query: str) -> str:
         5. 基金经理在不同市场环境下的表现
         
         你的分析应该全面评估基金经理的能力和风格，帮助投资者了解基金背后的管理团队。""",
-        tools=[get_fund_info, get_fund_manager, get_fund_performance]
+        tools=[]
     )
     
     # 处理查询
@@ -131,7 +130,7 @@ def fees_analyst(query: str) -> str:
         5. 与同类基金的费率比较
         
         你的分析应该帮助投资者理解基金费用结构，评估费用的合理性和对长期收益的影响。""",
-        tools=[get_fund_info, get_fund_fees]
+        tools=[]
     )
     
     # 处理查询

@@ -6,7 +6,6 @@ import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from tools.fund_data import get_fund_info, get_fund_holdings, get_stock_news, get_stock_performance
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ def holdings_performance_analyst(query: str) -> str:
         5. 持有建议：[适合持有/谨慎持有/建议减持]
         6. 建议理由：[给出持有建议的具体理由]
         """,
-        tools=[get_fund_info, get_fund_holdings, get_stock_news, get_stock_performance]
+        tools=[]
     )
     
     # 处理查询

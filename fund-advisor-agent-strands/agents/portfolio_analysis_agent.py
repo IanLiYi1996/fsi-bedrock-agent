@@ -6,7 +6,6 @@ import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from tools.fund_data import get_fund_info, get_fund_performance, get_fund_holdings, get_user_portfolio
 from agents.holdings_performance_analyst import holdings_performance_analyst
 
 logger = logging.getLogger(__name__)
@@ -58,7 +57,7 @@ def portfolio_analysis_agent(query: str) -> str:
            - 建议新增：[建议新增的基金类型或具体基金]
         6. 总结建议：[对用户投资组合的总体建议和优化方向]
         """,
-        tools=[get_fund_info, get_fund_performance, get_fund_holdings, get_user_portfolio, holdings_performance_analyst]
+        tools=[holdings_performance_analyst]
     )
     
     # 处理查询

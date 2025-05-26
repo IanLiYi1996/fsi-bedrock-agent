@@ -16,7 +16,6 @@ fund-advisor-agent-strands/
 ├── main.py                  # 主程序入口
 ├── requirements.txt         # 依赖包列表
 ├── config/                  # 配置文件
-├── utils/                   # 工具函数
 ├── README.md                # 项目说明文档
 ├── .env                     # 环境变量配置
 ```
@@ -50,12 +49,22 @@ fund-advisor-agent-strands/
 
 4. 配置AWS凭证：
    - 设置环境变量：`AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY`
+   - 或修改`.env`文件，内容如下：
+     ```
+     AWS_ACCESS_KEY_ID=your_access_key
+     AWS_SECRET_ACCESS_KEY=your_secret_key
+     ```
    - 或使用AWS CLI配置：`aws configure`
+
+5. 创建KB和DDB
+   ```bash
+   sh deploy_prereqs.sh
+   ```
 
 ## 使用方法
 
-运行主程序：
+- 运行主程序：
 
 ```bash
-python -u main.py
+source .env && python -u main.py
 ```
