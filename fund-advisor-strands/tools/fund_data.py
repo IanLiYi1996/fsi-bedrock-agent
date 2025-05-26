@@ -1308,3 +1308,314 @@ def get_fund_fees(fund_code: str) -> Dict[str, Any]:
                 {"text": f"获取基金费用结构出错: {str(e)}"}
             ]
         }
+
+# 股票资讯和表现数据
+stock_news_data = {
+    "600519": [  # 贵州茅台
+        {"title": "贵州茅台发布2025年一季度财报，营收增长15.3%", "date": "2025-04-15", "sentiment": "positive"},
+        {"title": "贵州茅台推出新品系列，市场反应积极", "date": "2025-03-20", "sentiment": "positive"},
+        {"title": "分析师预计白酒行业将迎来新一轮增长周期", "date": "2025-02-10", "sentiment": "positive"}
+    ],
+    "000858": [  # 五粮液
+        {"title": "五粮液2025年一季度业绩超预期，净利润增长12.8%", "date": "2025-04-18", "sentiment": "positive"},
+        {"title": "五粮液国际市场拓展计划取得突破", "date": "2025-03-15", "sentiment": "positive"},
+        {"title": "行业竞争加剧，五粮液市场份额面临挑战", "date": "2025-01-25", "sentiment": "negative"}
+    ],
+    "00700": [  # 腾讯控股
+        {"title": "腾讯云业务增长迅速，AI服务收入翻倍", "date": "2025-04-10", "sentiment": "positive"},
+        {"title": "腾讯游戏业务增长放缓，监管环境仍存不确定性", "date": "2025-03-05", "sentiment": "negative"},
+        {"title": "腾讯投资海外AI初创公司，布局前沿技术", "date": "2025-02-20", "sentiment": "positive"}
+    ],
+    "09988": [  # 阿里巴巴
+        {"title": "阿里巴巴电商业务重回增长轨道，云业务表现亮眼", "date": "2025-04-20", "sentiment": "positive"},
+        {"title": "阿里巴巴国际业务扩张提速，东南亚市场份额提升", "date": "2025-03-10", "sentiment": "positive"},
+        {"title": "阿里巴巴面临国内电商竞争加剧，利润率承压", "date": "2025-01-15", "sentiment": "negative"}
+    ],
+    "601318": [  # 中国平安
+        {"title": "中国平安保险科技转型成效显著，线上获客成本降低", "date": "2025-04-12", "sentiment": "positive"},
+        {"title": "中国平安寿险业务面临增长瓶颈，新单增速放缓", "date": "2025-03-01", "sentiment": "negative"},
+        {"title": "中国平安加大健康生态布局，医疗科技投入增加", "date": "2025-02-15", "sentiment": "positive"}
+    ],
+    "600036": [  # 招商银行
+        {"title": "招商银行零售业务持续领先，财富管理规模创新高", "date": "2025-04-16", "sentiment": "positive"},
+        {"title": "招商银行数字化转型加速，科技投入占比提升", "date": "2025-03-08", "sentiment": "positive"},
+        {"title": "银行业利差收窄，招商银行净息差承压", "date": "2025-01-20", "sentiment": "negative"}
+    ],
+    "000651": [  # 格力电器
+        {"title": "格力电器海外市场拓展顺利，出口收入大幅增长", "date": "2025-04-05", "sentiment": "positive"},
+        {"title": "格力电器新能源业务布局加速，多元化战略见效", "date": "2025-03-12", "sentiment": "positive"},
+        {"title": "家电行业竞争激烈，格力电器市场份额小幅下滑", "date": "2025-02-01", "sentiment": "negative"}
+    ],
+    "000333": [  # 美的集团
+        {"title": "美的集团智能家居生态系统获市场认可，销量增长迅速", "date": "2025-04-08", "sentiment": "positive"},
+        {"title": "美的集团机器人业务取得突破，工业自动化收入占比提升", "date": "2025-03-18", "sentiment": "positive"},
+        {"title": "原材料价格上涨，美的集团毛利率面临压力", "date": "2025-01-10", "sentiment": "negative"}
+    ],
+    "600276": [  # 恒瑞医药
+        {"title": "恒瑞医药多款新药获批上市，研发管线丰富", "date": "2025-04-14", "sentiment": "positive"},
+        {"title": "恒瑞医药国际化战略推进顺利，海外收入占比提升", "date": "2025-03-25", "sentiment": "positive"},
+        {"title": "医药行业集采扩围，恒瑞医药部分产品降价压力增大", "date": "2025-02-05", "sentiment": "negative"}
+    ],
+    "300750": [  # 宁德时代
+        {"title": "宁德时代新一代电池技术突破，能量密度提升20%", "date": "2025-04-22", "sentiment": "positive"},
+        {"title": "宁德时代海外工厂产能爬坡顺利，全球化布局加速", "date": "2025-03-15", "sentiment": "positive"},
+        {"title": "动力电池行业竞争加剧，宁德时代市占率小幅下滑", "date": "2025-01-30", "sentiment": "negative"}
+    ]
+}
+
+# 股票表现数据
+stock_performance_data = {
+    "600519": {  # 贵州茅台
+        "price": 1850.50,
+        "change_percent": 0.85,
+        "pe_ratio": 28.5,
+        "pb_ratio": 9.8,
+        "revenue_growth": 15.3,
+        "profit_growth": 16.2,
+        "analyst_ratings": {"买入": 15, "持有": 5, "卖出": 0},
+        "industry_rank": 1,
+        "returns": {"1month": 3.2, "3month": 8.5, "6month": 15.8, "1year": 22.5}
+    },
+    "000858": {  # 五粮液
+        "price": 168.30,
+        "change_percent": 0.65,
+        "pe_ratio": 22.8,
+        "pb_ratio": 5.2,
+        "revenue_growth": 12.8,
+        "profit_growth": 13.5,
+        "analyst_ratings": {"买入": 12, "持有": 8, "卖出": 0},
+        "industry_rank": 2,
+        "returns": {"1month": 2.8, "3month": 7.2, "6month": 13.5, "1year": 18.7}
+    },
+    "00700": {  # 腾讯控股
+        "price": 380.20,
+        "change_percent": 1.25,
+        "pe_ratio": 24.6,
+        "pb_ratio": 4.8,
+        "revenue_growth": 18.5,
+        "profit_growth": 15.8,
+        "analyst_ratings": {"买入": 18, "持有": 3, "卖出": 1},
+        "industry_rank": 1,
+        "returns": {"1month": 4.5, "3month": 12.8, "6month": 18.5, "1year": 25.6}
+    },
+    "09988": {  # 阿里巴巴
+        "price": 85.50,
+        "change_percent": -0.35,
+        "pe_ratio": 18.2,
+        "pb_ratio": 2.1,
+        "revenue_growth": 9.8,
+        "profit_growth": 7.5,
+        "analyst_ratings": {"买入": 14, "持有": 6, "卖出": 2},
+        "industry_rank": 2,
+        "returns": {"1month": -1.2, "3month": 5.8, "6month": 8.5, "1year": 12.3}
+    },
+    "601318": {  # 中国平安
+        "price": 48.25,
+        "change_percent": 0.45,
+        "pe_ratio": 8.5,
+        "pb_ratio": 1.2,
+        "revenue_growth": 5.2,
+        "profit_growth": 4.8,
+        "analyst_ratings": {"买入": 10, "持有": 8, "卖出": 2},
+        "industry_rank": 1,
+        "returns": {"1month": 2.1, "3month": 4.5, "6month": 7.8, "1year": 10.5}
+    },
+    "600036": {  # 招商银行
+        "price": 42.80,
+        "change_percent": 0.75,
+        "pe_ratio": 7.8,
+        "pb_ratio": 1.1,
+        "revenue_growth": 6.5,
+        "profit_growth": 7.2,
+        "analyst_ratings": {"买入": 12, "持有": 6, "卖出": 1},
+        "industry_rank": 1,
+        "returns": {"1month": 2.8, "3month": 5.2, "6month": 9.5, "1year": 15.2}
+    },
+    "000651": {  # 格力电器
+        "price": 38.50,
+        "change_percent": -0.25,
+        "pe_ratio": 10.2,
+        "pb_ratio": 1.8,
+        "revenue_growth": 4.5,
+        "profit_growth": 3.8,
+        "analyst_ratings": {"买入": 8, "持有": 10, "卖出": 2},
+        "industry_rank": 2,
+        "returns": {"1month": -0.8, "3month": 2.5, "6month": 5.8, "1year": 8.5}
+    },
+    "000333": {  # 美的集团
+        "price": 65.20,
+        "change_percent": 0.85,
+        "pe_ratio": 12.5,
+        "pb_ratio": 2.5,
+        "revenue_growth": 8.2,
+        "profit_growth": 7.5,
+        "analyst_ratings": {"买入": 14, "持有": 5, "卖出": 1},
+        "industry_rank": 1,
+        "returns": {"1month": 3.2, "3month": 7.8, "6month": 12.5, "1year": 18.2}
+    },
+    "600276": {  # 恒瑞医药
+        "price": 32.80,
+        "change_percent": 1.45,
+        "pe_ratio": 35.2,
+        "pb_ratio": 5.8,
+        "revenue_growth": 12.5,
+        "profit_growth": 10.8,
+        "analyst_ratings": {"买入": 15, "持有": 4, "卖出": 1},
+        "industry_rank": 1,
+        "returns": {"1month": 4.8, "3month": 10.5, "6month": 15.2, "1year": 20.5}
+    },
+    "300750": {  # 宁德时代
+        "price": 185.50,
+        "change_percent": 2.25,
+        "pe_ratio": 42.5,
+        "pb_ratio": 6.8,
+        "revenue_growth": 25.8,
+        "profit_growth": 20.5,
+        "analyst_ratings": {"买入": 16, "持有": 3, "卖出": 1},
+        "industry_rank": 1,
+        "returns": {"1month": 5.8, "3month": 15.2, "6month": 28.5, "1year": 35.8}
+    }
+}
+
+@tool
+def get_stock_news(stock_code: str) -> Dict[str, Any]:
+    """
+    获取股票相关新闻资讯
+    
+    Args:
+        stock_code: 股票代码
+    """
+    try:
+        if stock_code in stock_news_data:
+            return {
+                "status": "success",
+                "content": [
+                    {
+                        "json": {
+                            "stockCode": stock_code,
+                            "news": stock_news_data[stock_code]
+                        }
+                    }
+                ]
+            }
+        else:
+            return {
+                "status": "error",
+                "content": [
+                    {"text": f"未找到股票代码 {stock_code} 的新闻资讯"}
+                ]
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "content": [
+                {"text": f"获取股票新闻资讯出错: {str(e)}"}
+            ]
+        }
+
+@tool
+def get_stock_performance(stock_code: str) -> Dict[str, Any]:
+    """
+    获取股票表现数据
+    
+    Args:
+        stock_code: 股票代码
+    """
+    try:
+        if stock_code in stock_performance_data:
+            return {
+                "status": "success",
+                "content": [
+                    {
+                        "json": {
+                            "stockCode": stock_code,
+                            "performance": stock_performance_data[stock_code]
+                        }
+                    }
+                ]
+            }
+        else:
+            return {
+                "status": "error",
+                "content": [
+                    {"text": f"未找到股票代码 {stock_code} 的表现数据"}
+                ]
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "content": [
+                {"text": f"获取股票表现数据出错: {str(e)}"}
+            ]
+        }
+
+# 用户持仓数据（模拟）
+user_portfolio_data = {
+    "user123": {
+        "risk_profile": "积极型",
+        "investment_horizon": "长期",
+        "holdings": [
+            {"fund_code": "000001", "name": "华夏成长混合", "amount": 10000, "nav": 1.052, "proportion": 20},
+            {"fund_code": "110022", "name": "易方达消费行业股票", "amount": 15000, "nav": 2.345, "proportion": 30},
+            {"fund_code": "000961", "name": "天弘沪深300指数", "amount": 8000, "nav": 1.456, "proportion": 15},
+            {"fund_code": "000198", "name": "中银纯债债券A", "amount": 12000, "nav": 1.123, "proportion": 25},
+            {"fund_code": "000617", "name": "易方达货币市场基金A", "amount": 5000, "nav": 1.0, "proportion": 10}
+        ]
+    },
+    "user456": {
+        "risk_profile": "稳健型",
+        "investment_horizon": "中期",
+        "holdings": [
+            {"fund_code": "000198", "name": "中银纯债债券A", "amount": 20000, "nav": 1.123, "proportion": 40},
+            {"fund_code": "000001", "name": "华夏成长混合", "amount": 15000, "nav": 1.052, "proportion": 30},
+            {"fund_code": "000961", "name": "天弘沪深300指数", "amount": 10000, "nav": 1.456, "proportion": 20},
+            {"fund_code": "000617", "name": "易方达货币市场基金A", "amount": 5000, "nav": 1.0, "proportion": 10}
+        ]
+    },
+    "user789": {
+        "risk_profile": "保守型",
+        "investment_horizon": "短期",
+        "holdings": [
+            {"fund_code": "000198", "name": "中银纯债债券A", "amount": 25000, "nav": 1.123, "proportion": 50},
+            {"fund_code": "000617", "name": "易方达货币市场基金A", "amount": 25000, "nav": 1.0, "proportion": 50}
+        ]
+    }
+}
+
+@tool
+def get_user_portfolio(user_id: str) -> Dict[str, Any]:
+    """
+    获取用户持仓信息
+    
+    Args:
+        user_id: 用户ID
+    """
+    try:
+        if user_id in user_portfolio_data:
+            return {
+                "status": "success",
+                "content": [
+                    {
+                        "json": {
+                            "userId": user_id,
+                            "riskProfile": user_portfolio_data[user_id]["risk_profile"],
+                            "investmentHorizon": user_portfolio_data[user_id]["investment_horizon"],
+                            "holdings": user_portfolio_data[user_id]["holdings"]
+                        }
+                    }
+                ]
+            }
+        else:
+            return {
+                "status": "error",
+                "content": [
+                    {"text": f"未找到用户 {user_id} 的持仓信息"}
+                ]
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "content": [
+                {"text": f"获取用户持仓信息出错: {str(e)}"}
+            ]
+        }
