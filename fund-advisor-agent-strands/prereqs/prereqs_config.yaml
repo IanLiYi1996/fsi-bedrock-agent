@@ -10,15 +10,15 @@ tables:
   
   # 基金经理信息表
   - table_name: "fund_manager_info"
-    pk_item: "manager_id"
-    sk_item: "fund_code"
+    pk_item: "fund_code"
+    sk_item: "fund_name"
   
   # 基金交易费率表
   - table_name: "fund_fee_structure"
     pk_item: "fund_code"
     sk_item: "fee_type"
   
-  # 基金持仓信息表
-  - table_name: "fund_holdings"
+  # 基金表现表
+  - table_name: "fund_performance"
     pk_item: "fund_code"
     sk_item: "report_date"

@@ -21,7 +21,6 @@ from opensearchpy import (
 )
 import pprint
 from retrying import retry
-import random
 import yaml
 import os
 import argparse
