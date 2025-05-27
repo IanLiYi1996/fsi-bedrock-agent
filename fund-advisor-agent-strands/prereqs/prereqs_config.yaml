@@ -22,3 +22,7 @@ tables:
   - table_name: "fund_performance"
     pk_item: "fund_code"
     sk_item: "report_date"
+
+  - table_name: "user_holdings"
+    pk_item: "user_id"
+    sk_item: "fund_code"

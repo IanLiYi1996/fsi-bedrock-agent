@@ -262,3 +262,31 @@ def get_fund_industry_by_code(fund_code: str) -> dict:
         return fund_industry_allocation_df.head(5).to_dict(orient='records')
     except Exception:
         return {}
+    
+@tool
+def get_fund_individual_analysis_by_code(fund_code: str) -> dict:
+    """Get fund individual analysis by fund code
+    Args:
+        fund_code: the code of the fund
+    Returns:
+        individual_analysis: the individual analysis of the fund in JSON format
+    """
+    try:
+        fund_individual_analysis_df = ak.fund_individual_analysis_xq(symbol=fund_code)
+        return fund_individual_analysis_df.to_dict(orient='records')
+    except Exception as e:
+        return {"error": str(e)}
+
+@tool
+def get_fund_search_results(query: str) -> dict:
+    """Search for funds based on a query string
+    Args:
+        query: the search query string
+    Returns:
+        search_results: the search results in JSON format
+    """
+    try:
+        fund_search_em_df = ak.fund_search_em(symbol=query)
+        return fund_search_em_df.to_dict(orient='records')
+    except Exception as e:
+        return {"error": str(e)}

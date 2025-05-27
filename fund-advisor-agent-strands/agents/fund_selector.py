@@ -8,6 +8,7 @@ import logging
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = logging.getLogger(__name__)
+from tools.fund_info import get_fund_by_code, get_fund_search_results, get_fund_fees_by_code, get_fund_manager_by_code, get_fund_performance_by_code
 
 @tool
 def fund_selector_agent(query: str) -> str:
@@ -45,7 +46,8 @@ def fund_selector_agent(query: str) -> str:
            - 推荐理由：[为什么推荐这只基金]
         3. 投资建议：[如何配置这些基金，以及其他投资建议]
         """,
-        tools=[]
+        tools=[get_fund_by_code, get_fund_search_results, get_fund_fees_by_code, get_fund_manager_by_code, get_fund_performance_by_code
+]
     )
     
     # 处理查询
