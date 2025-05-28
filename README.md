@@ -4,7 +4,7 @@
 
 ## 项目概述
 
-本项目使用Amazon Bedrock Agents技术构建了一个多代理协作系统，专注于基金投资领域。系统由多个专业代理组成，每个代理负责特定的分析和决策任务，共同为用户提供全面的基金投资建议。
+本项目使用Amazon Bedrock Agents/Strands Agents这两个构建了多代理协作系统的示例代码，专注于基金投资领域。系统由多个专业代理组成，每个代理负责特定的分析和决策任务，共同为用户提供全面的基金投资建议。
 
 系统能够：
 
@@ -12,36 +12,6 @@
 - 根据用户的投资偏好推荐合适的基金产品
 - 提供基金绩效、持仓、基金经理和费用等多维度分析
 - 整合多个专家意见，形成全面的投资建议
-
-## 项目结构
-
-项目包含以下主要组件：
-
-```bash
-fsi-bedrock-agent/
-├── assets/                      # 资源文件
-├── bedrock-agent-kb/            # 基础知识库代理示例
-├── bedrock-agent-only/          # 基础代理示例
-├── bedrock-multi-agent/         # 多代理系统基础实现
-└── fund-advisor-multi-agent/    # 基金顾问多代理系统实现
-    ├── bin/                     # CDK入口点
-    ├── config/                  # 配置文件
-    │   └── api-schemas/         # API模式定义
-    ├── lambda/                  # Lambda函数
-    │   ├── fund-data/           # 基金数据处理函数
-    │   ├── fund-search/         # 基金搜索函数
-    │   └── orchestration/       # 代理协作编排函数
-    ├── lib/                     # CDK构造
-    │   ├── constructs/          # 自定义构造
-    │   │   ├── analysis-agents.ts       # 分析代理
-    │   │   ├── expert-agents.ts         # 专家代理
-    │   │   ├── fund-selector-agent.ts   # 基金筛选代理
-    │   │   ├── knowledge-base.ts        # 知识库
-    │   │   ├── portfolio-manager.ts     # 投资组合管理代理
-    │   │   └── user-profile-agent.ts    # 用户画像代理
-    │   └── fund-advisor-multi-agent-stack.ts  # 主堆栈定义
-    └── test/                    # 测试文件
-```
 
 ## 主要功能
 
@@ -123,7 +93,7 @@ fsi-bedrock-agent/
 2. 安装依赖
 
    ```bash
-   cd fund-advisor-multi-agent
+   cd <code-repo>
    npm install
    ```
 
