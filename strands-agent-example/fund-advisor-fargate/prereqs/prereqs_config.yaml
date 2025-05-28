@@ -30,3 +30,7 @@ tables:
   - table_name: "user_profile"
     pk_item: "user_id"
     sk_item: ""
+
+  - table_name: "fund-advisor-sessions"
+    pk_item: "session_id"
+    sk_item: ""

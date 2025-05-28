@@ -17,6 +17,7 @@ COPY app/ .
 COPY app/agents/ ./app/agents/
 COPY app/knowledge/ ./app/knowledge/
 COPY app/tools/ ./app/tools/
+COPY app/auth/ ./app/auth/
 
 # 创建非root用户运行应用
 RUN useradd -m appuser
