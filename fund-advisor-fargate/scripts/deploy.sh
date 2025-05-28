@@ -30,44 +30,26 @@ if ! command -v cdk &> /dev/null; then
 fi
 
 # 准备知识库和DynamoDB
-echo -e "${YELLOW}准备知识库和DynamoDB...${NC}"
-if [ -f "../fund-advisor-agent-strands/deploy_prereqs.sh" ]; then
-    echo -e "${YELLOW}运行原始项目的先决条件脚本...${NC}"
-    cd ../fund-advisor-agent-strands
-    sh deploy_prereqs.sh
-    cd ../fund-advisor-fargate/scripts
-else
-    echo -e "${RED}警告: 找不到原始项目的先决条件脚本. 请确保知识库和DynamoDB已经创建.${NC}"
-fi
-
-# 准备Docker构建目录
-echo -e "${YELLOW}准备Docker构建目录...${NC}"
-DOCKER_DIR="../docker"
-ORIGINAL_PROJECT_DIR="../../fund-advisor-agent-strands"
-
-# 复制原始项目的agents、knowledge和tools目录到Docker构建目录
-if [ -d "$ORIGINAL_PROJECT_DIR" ]; then
-    echo -e "${YELLOW}复制原始项目文件到Docker构建目录...${NC}"
-    
-    # 创建目标目录（如果不存在）
-    mkdir -p "$DOCKER_DIR/agents"
-    mkdir -p "$DOCKER_DIR/knowledge"
-    mkdir -p "$DOCKER_DIR/tools"
-    
-    # 复制文件
-    cp -r "$ORIGINAL_PROJECT_DIR/agents/"* "$DOCKER_DIR/agents/"
-    cp -r "$ORIGINAL_PROJECT_DIR/knowledge/"* "$DOCKER_DIR/knowledge/"
-    cp -r "$ORIGINAL_PROJECT_DIR/tools/"* "$DOCKER_DIR/tools/"
-    
-    echo -e "${GREEN}文件复制完成.${NC}"
-else
-    echo -e "${RED}错误: 找不到原始项目目录 $ORIGINAL_PROJECT_DIR${NC}"
-    exit 1
-fi
+# echo -e "${YELLOW}准备知识库和DynamoDB...${NC}"
+# if [ -f "../fund-advisor-agent-strands/deploy_prereqs.sh" ]; then
+#     echo -e "${YELLOW}运行原始项目的先决条件脚本...${NC}"
+#     cd ../fund-advisor-agent-strands
+#     sh deploy_prereqs.sh
+#     cd ../fund-advisor-fargate/scripts
+# else
+#     echo -e "${RED}警告: 找不到原始项目的先决条件脚本. 请确保知识库和DynamoDB已经创建.${NC}"
+# fi
 
 # 部署CDK堆栈
 echo -e "${YELLOW}部署CDK堆栈...${NC}"
 cd ../cdk
+
+# 删除旧的构建目录
+if [ -d "dist" ]; then
+    echo -e "${YELLOW}清理旧的构建目录...${NC}"
+    rm -rf dist
+    echo -e "${GREEN}旧的构建目录已清理.${NC}"
+fi
 
 # 安装依赖
 echo -e "${YELLOW}安装CDK依赖...${NC}"

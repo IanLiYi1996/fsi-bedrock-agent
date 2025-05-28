@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/python:3.12-slim
+FROM --platform=linux/amd64 public.ecr.aws/docker/library/python:3.12-slim
 
 WORKDIR /app
 
@@ -14,11 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 复制应用代码
 COPY app/ .
 
-# 复制agents、knowledge和tools目录
-# 注意：这些目录需要在构建时从原项目复制过来
-COPY agents/ ./agents/
-COPY knowledge/ ./knowledge/
-COPY tools/ ./tools/
+COPY app/agents/ ./app/agents/
+COPY app/knowledge/ ./app/knowledge/
+COPY app/tools/ ./app/tools/
 
 # 创建非root用户运行应用
 RUN useradd -m appuser

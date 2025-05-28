@@ -82,10 +82,11 @@ export class FundAdvisorFargateStack extends Stack {
       taskRole,
     });
 
-    // 使用Docker目录中的Dockerfile
+    // 使用Docker目录中的Dockerfile，并指定平台
     const dockerAsset = new ecrAssets.DockerImageAsset(this, "FundAdvisorImage", {
       directory: path.join(__dirname, "../../docker"),
       file: "Dockerfile",
+      platform: ecrAssets.Platform.LINUX_AMD64,
     });
 
     // 添加容器到任务定义
