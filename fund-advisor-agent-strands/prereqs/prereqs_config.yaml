@@ -26,3 +26,7 @@ tables:
   - table_name: "user_holdings"
     pk_item: "user_id"
     sk_item: "fund_code"
+
+  - table_name: "user_profile"
+    pk_item: "user_id"
+    sk_item: ""

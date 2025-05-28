@@ -7,7 +7,7 @@ import logging
 # 添加项目根目录到Python路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agents.comprehensive_holdings_analyst import comprehensive_holdings_analyst
-from tools.user_info import get_user_fund_holding, get_user_holdings
+from tools.user_info import get_user_comprehensive_info, get_user_holdings
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ def portfolio_allocation_expert(query: str) -> str:
            - 建议新增：[建议新增的基金类型或具体基金]
         7. 总结建议：[对用户投资组合的总体建议和优化方向]
         """,
-        tools=[get_user_holdings, comprehensive_holdings_analyst]
+        tools=[get_user_comprehensive_info, get_user_holdings, comprehensive_holdings_analyst]
     )
     
     # 处理查询

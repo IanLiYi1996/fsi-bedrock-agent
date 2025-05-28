@@ -236,3 +236,191 @@ def get_user_portfolio_summary(user_id: str) -> dict:
         }
     except Exception as e:
         return str(e)
+
+@tool
+def get_user_profile(user_id: str) -> dict:
+    """获取用户的身份信息
+    Args:
+        user_id: 用户ID
+    Returns:
+        profile: 用户身份信息的JSON格式
+    """
+    try:
+        table = get_table("user_profile")
+        
+        # 使用主键(user_id)查询
+        response = table.get_item(
+            Key={
+                "user_id": user_id
+            }
+        )
+        
+        if "Item" in response:
+            return response["Item"]
+        else:
+            return f"未找到用户 {user_id} 的身份信息"
+    except Exception as e:
+        return str(e)
+
+@tool
+def create_user_profile(user_id: str, name: str, age: int, risk_preference: str,
+                       investment_horizon: int, investment_goal: str,
+                       annual_income: float = None, total_assets: float = None) -> dict:
+    """创建用户身份信息
+    Args:
+        user_id: 用户ID
+        name: 用户姓名
+        age: 用户年龄
+        risk_preference: 风险偏好（低风险、中等风险、高风险）
+        investment_horizon: 投资年限（年）
+        investment_goal: 投资目标
+        annual_income: 年收入（可选）
+        total_assets: 总资产（可选）
+    Returns:
+        result: 操作结果
+    """
+    try:
+        table = get_table("user_profile")
+        
+        # 检查用户是否已存在
+        response = table.get_item(
+            Key={
+                "user_id": user_id
+            }
+        )
+        
+        if "Item" in response:
+            return {"status": "error", "message": f"用户 {user_id} 已存在"}
+        
+        # 创建项目
+        item = {
+            "user_id": user_id,
+            "name": name,
+            "age": age,
+            "risk_preference": risk_preference,
+            "investment_horizon": investment_horizon,
+            "investment_goal": investment_goal,
+            "last_updated": datetime.now().isoformat()
+        }
+        
+        if annual_income is not None:
+            item["annual_income"] = annual_income
+            
+        if total_assets is not None:
+            item["total_assets"] = total_assets
+        
+        # 添加到DynamoDB
+        table.put_item(Item=item)
+        
+        return {"status": "success", "message": f"成功创建用户 {user_id} 的身份信息"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@tool
+def update_user_profile(user_id: str, name: str = None, age: int = None,
+                       risk_preference: str = None, investment_horizon: int = None,
+                       investment_goal: str = None, annual_income: float = None,
+                       total_assets: float = None) -> dict:
+    """更新用户身份信息
+    Args:
+        user_id: 用户ID
+        name: 用户姓名（可选）
+        age: 用户年龄（可选）
+        risk_preference: 风险偏好（可选）
+        investment_horizon: 投资年限（可选）
+        investment_goal: 投资目标（可选）
+        annual_income: 年收入（可选）
+        total_assets: 总资产（可选）
+    Returns:
+        result: 操作结果
+    """
+    try:
+        table = get_table("user_profile")
+        
+        # 检查用户是否存在
+        response = table.get_item(
+            Key={
+                "user_id": user_id
+            }
+        )
+        
+        if "Item" not in response:
+            return {"status": "error", "message": f"未找到用户 {user_id}"}
+        
+        # 构建更新表达式
+        update_expression = "SET last_updated = :updated"
+        expression_values = {
+            ":updated": datetime.now().isoformat()
+        }
+        
+        if name is not None:
+            update_expression += ", #name = :name"
+            expression_values[":name"] = name
+            
+        if age is not None:
+            update_expression += ", age = :age"
+            expression_values[":age"] = age
+            
+        if risk_preference is not None:
+            update_expression += ", risk_preference = :risk"
+            expression_values[":risk"] = risk_preference
+            
+        if investment_horizon is not None:
+            update_expression += ", investment_horizon = :horizon"
+            expression_values[":horizon"] = investment_horizon
+            
+        if investment_goal is not None:
+            update_expression += ", investment_goal = :goal"
+            expression_values[":goal"] = investment_goal
+            
+        if annual_income is not None:
+            update_expression += ", annual_income = :income"
+            expression_values[":income"] = annual_income
+            
+        if total_assets is not None:
+            update_expression += ", total_assets = :assets"
+            expression_values[":assets"] = total_assets
+        
+        # 更新项目
+        table.update_item(
+            Key={
+                "user_id": user_id
+            },
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=expression_values,
+            ExpressionAttributeNames={
+                "#name": "name"  # name 是 DynamoDB 的保留字，需要使用表达式属性名
+            } if name is not None else {}
+        )
+        
+        return {"status": "success", "message": f"成功更新用户 {user_id} 的身份信息"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@tool
+def get_user_comprehensive_info(user_id: str) -> dict:
+    """获取用户的综合信息（包括身份信息和投资组合）
+    Args:
+        user_id: 用户ID
+    Returns:
+        info: 用户综合信息的JSON格式
+    """
+    try:
+        # 获取用户身份信息
+        profile = get_user_profile(user_id)
+        if isinstance(profile, str):  # 错误消息
+            return {"status": "error", "message": profile}
+            
+        # 获取用户投资组合摘要
+        portfolio = get_user_portfolio_summary(user_id)
+        if isinstance(portfolio, str):  # 错误消息
+            portfolio = {"status": "error", "message": portfolio}
+            
+        # 合并信息
+        return {
+            "user_id": user_id,
+            "profile": profile,
+            "portfolio": portfolio
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

@@ -278,15 +278,64 @@ def get_fund_individual_analysis_by_code(fund_code: str) -> dict:
         return {"error": str(e)}
 
 @tool
-def get_fund_search_results(query: str) -> dict:
-    """Search for funds based on a query string
+def get_fund_search_results(query: str, fund_type: str = None) -> dict:
+    """Search for funds based on a query string and optionally filter by fund type
     Args:
         query: the search query string
+        fund_type: optional filter by fund type (e.g., '债券型', '混合型', '指数型', '货币型')
     Returns:
-        search_results: the search results in JSON format
+        search_results: the search results in JSON format, sorted by ytd_return (year-to-date return)
+        in descending order and randomly selecting 20 from the top 100
     """
     try:
-        fund_search_em_df = ak.fund_search_em(symbol=query)
-        return fund_search_em_df.to_dict(orient='records')
+        import duckdb
+        import pandas as pd
+        import random
+        from pathlib import Path
+        
+        # 获取CSV文件的绝对路径
+        current_dir = Path(__file__).parent
+        csv_path = current_dir / "data" / "fund_performance_all.csv"
+        
+        # 构建SQL查询
+        sql_query = f"""
+            SELECT * FROM read_csv('{csv_path}', AUTO_DETECT=TRUE)
+            WHERE 1=1
+        """
+        
+        # 添加模糊搜索条件
+        if query:
+            sql_query += f"""
+                AND (
+                    fund_code LIKE '%{query}%' OR
+                    fund_name LIKE '%{query}%'
+                )
+            """
+        
+        # 如果提供了基金类型，添加筛选条件
+        if fund_type:
+            sql_query += f"""
+                AND fund_type LIKE '%{fund_type}%'
+            """
+        
+        # 按照ytd_return降序排序并限制结果为前100个
+        sql_query += """
+            ORDER BY CAST(ytd_return AS FLOAT) DESC
+            LIMIT 100
+        """
+        
+        # 执行查询
+        result = duckdb.sql(sql_query).df()
+        
+        # 如果结果少于20个，返回所有结果
+        if len(result) <= 20:
+            return result.to_dict(orient='records')
+        
+        # 从前100个结果中随机选择20个
+        random_indices = random.sample(range(len(result)), 20)
+        random_results = result.iloc[random_indices]
+        
+        # 将结果转换为字典列表
+        return random_results.to_dict(orient='records')
     except Exception as e:
         return {"error": str(e)}
