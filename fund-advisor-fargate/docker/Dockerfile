@@ -1,0 +1,31 @@
+FROM public.ecr.aws/docker/library/python:3.12-slim
+
+WORKDIR /app
+
+# 安装系统依赖
+RUN apt-get update && apt-get install -y \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制requirements.txt并安装Python依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制应用代码
+COPY app/ .
+
+# 复制agents、knowledge和tools目录
+# 注意：这些目录需要在构建时从原项目复制过来
+COPY agents/ ./agents/
+COPY knowledge/ ./knowledge/
+COPY tools/ ./tools/
+
+# 创建非root用户运行应用
+RUN useradd -m appuser
+USER appuser
+
+# 暴露应用端口
+EXPOSE 8000
+
+# 启动命令
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
