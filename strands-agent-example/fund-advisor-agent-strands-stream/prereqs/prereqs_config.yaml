@@ -1,0 +1,32 @@
+knowledge_base_name: "fsi-fund-knowledge"
+knowledge_base_description: "bedrock-allow"
+kb_files_path: "data"
+
+# 基金基本信息表
+tables:
+  - table_name: "fund_basic_info"
+    pk_item: "fund_code"
+    sk_item: "fund_name"
+  
+  # 基金经理信息表
+  - table_name: "fund_manager_info"
+    pk_item: "fund_code"
+    sk_item: "fund_name"
+  
+  # 基金交易费率表
+  - table_name: "fund_fee_structure"
+    pk_item: "fund_code"
+    sk_item: "fee_type"
+  
+  # 基金表现表
+  - table_name: "fund_performance"
+    pk_item: "fund_code"
+    sk_item: "report_date"
+
+  - table_name: "user_holdings"
+    pk_item: "user_id"
+    sk_item: "fund_code"
+
+  - table_name: "user_profile"
+    pk_item: "user_id"
+    sk_item: ""

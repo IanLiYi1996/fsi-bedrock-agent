@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基金投顾API测试页面</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .query-form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .response-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-height: 200px;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+        .tool-usage {
+            background-color: #e8f4f8;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px 0;
+            font-style: italic;
+            color: #2980b9;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>基金投顾API测试页面</h1>
+    
+    <div class="container">
+        <div class="query-form">
+            <h2>输入您的问题</h2>
+            <textarea id="query-input" placeholder="例如：请分析一下易方达中小盘混合基金（110011）的投资价值"></textarea>
+            
+            <div class="button-group">
+                <button id="normal-query-btn">普通查询</button>
+                <button id="stream-query-btn">流式查询（纯文本）</button>
+                <button id="sse-query-btn">流式查询（SSE）</button>
+                <button id="clear-btn">清空结果</button>
+            </div>
+        </div>
+        
+        <div class="response-container" id="response-output">
+            <p>响应将显示在这里...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const queryInput = document.getElementById('query-input');
+            const normalQueryBtn = document.getElementById('normal-query-btn');
+            const streamQueryBtn = document.getElementById('stream-query-btn');
+            const sseQueryBtn = document.getElementById('sse-query-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const responseOutput = document.getElementById('response-output');
+            
+            let controller = null;
+            
+            // 普通查询
+            normalQueryBtn.addEventListener('click', async function() {
+                const query = queryInput.value.trim();
+                if (!query) {
+                    alert('请输入查询内容');
+                    return;
+                }
+                
+                setLoading(true);
+                responseOutput.textContent = '正在处理您的问题，请稍候...\n';
+                
+                try {
+                    const response = await fetch('/advisor', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: query
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    responseOutput.textContent = data.response;
+                } catch (error) {
+                    responseOutput.textContent = `错误: ${error.message}`;
+                } finally {
+                    setLoading(false);
+                }
+            });
+            
+            // 流式查询（纯文本）
+            streamQueryBtn.addEventListener('click', async function() {
+                const query = queryInput.value.trim();
+                if (!query) {
+                    alert('请输入查询内容');
+                    return;
+                }
+                
+                // 如果有正在进行的请求，取消它
+                if (controller) {
+                    controller.abort();
+                }
+                
+                controller = new AbortController();
+                const signal = controller.signal;
+                
+                setLoading(true);
+                responseOutput.textContent = '';
+                
+                try {
+                    const response = await fetch('/advisor/stream', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: query
+                        }),
+                        signal: signal
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        
+                        if (done) {
+                            break;
+                        }
+                        
+                        const text = decoder.decode(value);
+                        responseOutput.textContent += text;
+                        
+                        // 自动滚动到底部
+                        responseOutput.scrollTop = responseOutput.scrollHeight;
+                    }
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        responseOutput.textContent += `\n错误: ${error.message}`;
+                    }
+                } finally {
+                    setLoading(false);
+                    controller = null;
+                }
+            });
+            
+            // 流式查询（SSE）
+            sseQueryBtn.addEventListener('click', function() {
+                const query = queryInput.value.trim();
+                if (!query) {
+                    alert('请输入查询内容');
+                    return;
+                }
+                
+                // 如果有正在进行的SSE连接，关闭它
+                if (window.eventSource) {
+                    window.eventSource.close();
+                }
+                
+                setLoading(true);
+                responseOutput.textContent = '';
+                
+                // 创建SSE连接，使用GET方法
+                const eventSource = new EventSource(`/advisor/stream/events?query=${encodeURIComponent(query)}`);
+                window.eventSource = eventSource;
+                
+                // 处理普通消息
+                eventSource.onmessage = function(event) {
+                    responseOutput.textContent += event.data;
+                    responseOutput.scrollTop = responseOutput.scrollHeight;
+                };
+                
+                // 处理工具使用事件
+                eventSource.addEventListener('tool', function(event) {
+                    const toolDiv = document.createElement('div');
+                    toolDiv.className = 'tool-usage';
+                    toolDiv.textContent = `[使用工具: ${event.data}]`;
+                    responseOutput.appendChild(toolDiv);
+                    responseOutput.scrollTop = responseOutput.scrollHeight;
+                });
+                
+                // 处理完成事件
+                eventSource.addEventListener('complete', function(event) {
+                    eventSource.close();
+                    setLoading(false);
+                });
+                
+                // 处理错误
+                eventSource.addEventListener('error', function(event) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.style.color = 'red';
+                    errorDiv.textContent = `错误: ${event.data || '连接中断'}`;
+                    responseOutput.appendChild(errorDiv);
+                    eventSource.close();
+                    setLoading(false);
+                });
+                
+                eventSource.onerror = function() {
+                    eventSource.close();
+                    setLoading(false);
+                };
+            });
+            
+            // 清空结果
+            clearBtn.addEventListener('click', function() {
+                responseOutput.textContent = '响应将显示在这里...';
+                
+                // 如果有正在进行的请求，取消它
+                if (controller) {
+                    controller.abort();
+                    controller = null;
+                }
+                
+                // 如果有正在进行的SSE连接，关闭它
+                if (window.eventSource) {
+                    window.eventSource.close();
+                    window.eventSource = null;
+                }
+                
+                setLoading(false);
+            });
+            
+            // 设置加载状态
+            function setLoading(isLoading) {
+                [normalQueryBtn, streamQueryBtn, sseQueryBtn].forEach(btn => {
+                    btn.disabled = isLoading;
+                    
+                    // 移除现有的加载指示器
+                    const existingLoader = btn.querySelector('.loading');
+                    if (existingLoader) {
+                        btn.removeChild(existingLoader);
+                    }
+                    
+                    // 添加新的加载指示器
+                    if (isLoading) {
+                        const loader = document.createElement('span');
+                        loader.className = 'loading';
+                        btn.appendChild(loader);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
