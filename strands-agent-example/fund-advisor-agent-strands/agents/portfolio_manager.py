@@ -87,7 +87,8 @@ class PortfolioManagerAgent:
             请记住，你的建议可能影响用户的财务决策，务必保持专业、负责任的态度。
             """,
             tools=[mem0_memory, current_time, retrieve, strategy_performance_expert,comprehensive_holdings_analyst,portfolio_allocation_expert,market_trend_expert,manager_analyst,fees_analyst,user_profile_agent,fund_selector_agent
-            ]
+            ],
+            load_tools_from_directory=False
         )
     
     def process_query(self, query: str) -> str:

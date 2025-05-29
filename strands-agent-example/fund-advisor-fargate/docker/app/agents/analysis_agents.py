@@ -35,7 +35,8 @@ def manager_analyst(query: str) -> str:
         5. 基金经理在不同市场环境下的表现
         
         你的分析应该全面评估基金经理的能力和风格，帮助投资者了解基金背后的管理团队。""",
-        tools=[get_fund_manager_by_code]
+        tools=[get_fund_manager_by_code],
+        load_tools_from_directory=False
     )
     
     # 处理查询
@@ -67,7 +68,8 @@ def fees_analyst(query: str) -> str:
         5. 与同类基金的费率比较
         
         你的分析应该帮助投资者理解基金费用结构，评估费用的合理性和对长期收益的影响。""",
-        tools=[get_fund_fees_by_code]
+        tools=[get_fund_fees_by_code],
+        load_tools_from_directory=False
     )
     
     # 处理查询

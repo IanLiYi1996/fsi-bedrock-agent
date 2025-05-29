@@ -35,7 +35,8 @@ def market_trend_expert(query: str) -> str:
         5. 地缘政治和政策变化的潜在影响
         
         你的分析应该前瞻性，帮助投资者理解市场环境变化对基金表现的影响。""",
-        tools=[get_macro_china_cpi, get_macro_china_lpr, get_stock_index, get_stock_market_activity, get_macro_china_ppi]
+        tools=[get_macro_china_cpi, get_macro_china_lpr, get_stock_index, get_stock_market_activity, get_macro_china_ppi],
+        load_tools_from_directory=False
     )
     
     # 处理查询

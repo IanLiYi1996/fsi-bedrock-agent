@@ -46,8 +46,8 @@ def fund_selector_agent(query: str) -> str:
            - 推荐理由：[为什么推荐这只基金]
         3. 投资建议：[如何配置这些基金，以及其他投资建议]
         """,
-        tools=[get_fund_by_code, get_fund_search_results, get_fund_fees_by_code, get_fund_manager_by_code, get_fund_performance_by_code
-]
+        tools=[get_fund_by_code, get_fund_search_results, get_fund_fees_by_code, get_fund_manager_by_code, get_fund_performance_by_code],
+        load_tools_from_directory=False
     )
     
     # 处理查询

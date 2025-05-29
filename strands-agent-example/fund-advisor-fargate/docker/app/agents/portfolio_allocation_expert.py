@@ -71,7 +71,8 @@ def portfolio_allocation_expert(query: str) -> str:
            - 建议新增：[建议新增的基金类型或具体基金]
         7. 总结建议：[对用户投资组合的总体建议和优化方向]
         """,
-        tools=[get_user_comprehensive_info, get_user_holdings, comprehensive_holdings_analyst]
+        tools=[get_user_comprehensive_info, get_user_holdings, comprehensive_holdings_analyst],
+        load_tools_from_directory=False
     )
     
     # 处理查询

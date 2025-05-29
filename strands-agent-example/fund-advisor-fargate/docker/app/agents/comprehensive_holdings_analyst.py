@@ -66,7 +66,8 @@ def comprehensive_holdings_analyst(query: str) -> str:
         6. 持有建议：[适合持有/谨慎持有/建议减持]
         7. 建议理由：[给出持有建议的具体理由]
         """,
-        tools=[get_fund_by_code, get_fund_holdings_by_code, get_fund_performance_by_code, get_stock_info_by_code, get_stock_news_by_code, get_stock_performance_by_code]
+        tools=[get_fund_by_code, get_fund_holdings_by_code, get_fund_performance_by_code, get_stock_info_by_code, get_stock_news_by_code, get_stock_performance_by_code],
+        load_tools_from_directory=False
     )
     
     # 处理查询

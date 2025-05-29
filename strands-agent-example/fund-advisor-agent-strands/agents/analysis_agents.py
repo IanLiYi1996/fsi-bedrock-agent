@@ -67,7 +67,8 @@ def fees_analyst(query: str) -> str:
         5. 与同类基金的费率比较
         
         你的分析应该帮助投资者理解基金费用结构，评估费用的合理性和对长期收益的影响。""",
-        tools=[get_fund_fees_by_code]
+        tools=[get_fund_fees_by_code],
+        load_tools_from_directory=False
     )
     
     # 处理查询

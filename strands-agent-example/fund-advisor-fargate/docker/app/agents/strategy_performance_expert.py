@@ -61,7 +61,8 @@ def strategy_performance_expert(query: str) -> str:
         5. 投资建议：[适合投资/谨慎投资/不建议投资]
         6. 建议理由：[给出投资建议的具体理由]
         """,
-        tools=[get_fund_by_code, get_fund_performance_by_code,get_fund_individual_analysis_by_code]
+        tools=[get_fund_by_code, get_fund_performance_by_code,get_fund_individual_analysis_by_code],
+        load_tools_from_directory=False
     )
     
     # 处理查询
