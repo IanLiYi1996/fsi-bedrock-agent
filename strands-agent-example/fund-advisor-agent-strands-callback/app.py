@@ -1,16 +1,29 @@
-from fastapi import FastAPI, HTTPException, Request
+"""
+基金投顾多Agent系统 - FastAPI接口
+
+此模块提供了基金投顾多Agent系统的FastAPI接口，支持使用回调处理器处理各类信息。
+"""
+
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, AsyncIterator
+from typing import Optional, Dict, Any, AsyncIterator, List
 import logging
 import os
 import sys
 import asyncio
 from dotenv import load_dotenv
+import json
 
 from agents.portfolio_manager import PortfolioManagerAgent
+from utils.callback_handlers import (
+    BufferingCallbackHandler,
+    StreamingCallbackHandler,
+    WebSocketCallbackHandler,
+    SSECallbackHandler
+)
 
 # 加载环境变量
 load_dotenv()
@@ -23,7 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="基金投顾API", description="提供基金投资建议的API服务，支持普通查询和流式查询")
+app = FastAPI(title="基金投顾API", description="提供基金投资建议的API服务，支持使用回调处理器处理各类信息")
 
 # 添加CORS中间件，允许跨域请求
 app.add_middleware(
@@ -38,7 +51,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # 创建投资组合管理Agent
-portfolio_manager = PortfolioManagerAgent(load_tools_from_directory=False)
+portfolio_manager = None
 
 class QueryRequest(BaseModel):
     """查询请求模型"""
@@ -49,6 +62,14 @@ class HealthResponse(BaseModel):
     """健康检查响应模型"""
     status: str
     version: str = "1.0.0"
+
+@app.on_event("startup")
+async def startup_event():
+    """应用启动时执行的事件"""
+    global portfolio_manager
+    # 创建投资组合管理Agent，不使用回调处理器（将在每个请求中单独创建）
+    portfolio_manager = PortfolioManagerAgent(callback_handler=None)
+    logger.info("基金投顾API服务已启动")
 
 @app.get('/health')
 def health_check() -> HealthResponse:
@@ -71,12 +92,19 @@ async def get_investment_advice(request: QueryRequest) -> Dict[str, Any]:
         if not query:
             raise HTTPException(status_code=400, detail="未提供查询内容")
         
+        # 创建缓冲回调处理器
+        buffer_handler = BufferingCallbackHandler()
+        
         # 处理用户查询
         logger.info(f"处理用户查询: {query}")
-        response = portfolio_manager.process_query(query)
+        portfolio_manager.process_query(query, callback_handler=buffer_handler)
+        
+        # 获取缓存的结果
+        result = buffer_handler.get_result()
         
         return {
-            "response": response,
+            "response": result["text"],
+            "tool_uses": result["tool_uses"],
             "session_id": request.session_id,
             "status": "success"
         }
@@ -94,17 +122,39 @@ async def stream_response(query: str) -> AsyncIterator[str]:
     Yields:
         文本块或事件数据
     """
+    # 创建一个队列用于异步通信
+    queue = asyncio.Queue()
+    
+    # 定义回调函数
+    def text_callback(text: str):
+        asyncio.create_task(queue.put(text))
+    
+    def tool_callback(tool_use: Dict[str, Any]):
+        tool_name = tool_use.get("name", "未知工具")
+        asyncio.create_task(queue.put(f"\n[使用工具: {tool_name}]\n"))
+    
+    def complete_callback():
+        asyncio.create_task(queue.put(None))  # 发送完成信号
+    
+    # 创建流式回调处理器
+    streaming_handler = StreamingCallbackHandler(
+        text_callback=text_callback,
+        tool_callback=tool_callback,
+        complete_callback=complete_callback
+    )
+    
     try:
-        # 使用我们实现的流式输出功能
-        # 直接迭代异步生成器，不要使用await
-        async for event in portfolio_manager.process_query_stream(query):
-            if "data" in event:
-                # 只输出文本内容
-                yield event["data"]
-            elif "current_tool_use" in event and event["current_tool_use"].get("name"):
-                # 可选：输出工具使用信息
-                tool_name = event["current_tool_use"]["name"]
-                yield f"\n[使用工具: {tool_name}]\n"
+        # 在后台处理查询
+        asyncio.create_task(
+            portfolio_manager.process_query_async(query, callback_handler=streaming_handler)
+        )
+        
+        # 从队列中获取结果并返回
+        while True:
+            item = await queue.get()
+            if item is None:  # 完成信号
+                break
+            yield item
     except Exception as e:
         logger.error(f"流式处理查询时出错: {str(e)}")
         yield f"处理您的问题时出现错误: {str(e)}"
@@ -158,20 +208,29 @@ async def stream_investment_advice_events(request: QueryRequest):
         
         logger.info(f"流式处理用户查询(SSE): {query}")
         
+        # 创建一个队列用于异步通信
+        queue = asyncio.Queue()
+        
+        # 创建SSE回调处理器
+        async def send_sse(data: str):
+            await queue.put(data)
+        
+        sse_handler = SSECallbackHandler(send_func=lambda data: asyncio.create_task(send_sse(data)))
+        
         async def event_generator():
             try:
-                # 直接迭代异步生成器，不要使用await
-                async for event in portfolio_manager.process_query_stream(query):
-                    if "data" in event:
-                        # 文本内容作为data事件
-                        yield f"data: {event['data']}\n\n"
-                    elif "current_tool_use" in event and event["current_tool_use"].get("name"):
-                        # 工具使用信息作为tool事件
-                        tool_name = event["current_tool_use"]["name"]
-                        yield f"event: tool\ndata: {tool_name}\n\n"
+                # 在后台处理查询
+                asyncio.create_task(
+                    portfolio_manager.process_query_async(query, callback_handler=sse_handler)
+                )
                 
-                # 发送完成事件
-                yield f"event: complete\ndata: true\n\n"
+                # 从队列中获取结果并返回
+                while True:
+                    item = await queue.get()
+                    if item.startswith("event: complete"):
+                        yield item
+                        break
+                    yield item
             except Exception as e:
                 logger.error(f"SSE流式处理查询时出错: {str(e)}")
                 yield f"event: error\ndata: {str(e)}\n\n"
@@ -184,48 +243,67 @@ async def stream_investment_advice_events(request: QueryRequest):
         logger.error(f"设置SSE流式响应时出错: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get('/advisor/stream/events')
-async def stream_investment_advice_events_get(query: str):
+@app.websocket('/ws/advisor')
+async def websocket_advisor(websocket: WebSocket):
     """
-    流式返回投资建议的端点（GET方法），以Server-Sent Events格式
+    WebSocket端点，用于实时交互
     
     Args:
-        query: 查询内容
-        
-    Returns:
-        SSE格式的流式响应对象
+        websocket: WebSocket连接
     """
+    await websocket.accept()
+    
     try:
-        if not query:
-            raise HTTPException(status_code=400, detail="未提供查询内容")
-        
-        logger.info(f"流式处理用户查询(SSE-GET): {query}")
-        
-        async def event_generator():
-            try:
-                # 直接迭代异步生成器，不要使用await
-                async for event in portfolio_manager.process_query_stream(query):
-                    if "data" in event:
-                        # 文本内容作为data事件
-                        yield f"data: {event['data']}\n\n"
-                    elif "current_tool_use" in event and event["current_tool_use"].get("name"):
-                        # 工具使用信息作为tool事件
-                        tool_name = event["current_tool_use"]["name"]
-                        yield f"event: tool\ndata: {tool_name}\n\n"
-                
-                # 发送完成事件
-                yield f"event: complete\ndata: true\n\n"
-            except Exception as e:
-                logger.error(f"SSE流式处理查询时出错: {str(e)}")
-                yield f"event: error\ndata: {str(e)}\n\n"
-        
-        return StreamingResponse(
-            event_generator(),
-            media_type="text/event-stream"
+        # 创建WebSocket回调处理器
+        ws_handler = WebSocketCallbackHandler(
+            send_func=lambda data: asyncio.create_task(websocket.send_text(data))
         )
+        
+        while True:
+            # 接收消息
+            data = await websocket.receive_text()
+            
+            try:
+                # 解析消息
+                message = json.loads(data)
+                query = message.get("query")
+                
+                if not query:
+                    await websocket.send_text(json.dumps({
+                        "type": "error",
+                        "content": "未提供查询内容"
+                    }))
+                    continue
+                
+                logger.info(f"WebSocket处理用户查询: {query}")
+                
+                # 处理查询
+                await portfolio_manager.process_query_async(query, callback_handler=ws_handler)
+                
+                # 发送完成消息
+                await websocket.send_text(json.dumps({
+                    "type": "complete",
+                    "status": "success"
+                }))
+            
+            except json.JSONDecodeError:
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "content": "无效的JSON格式"
+                }))
+            
+            except Exception as e:
+                logger.error(f"处理WebSocket查询时出错: {str(e)}")
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "content": str(e)
+                }))
+    
+    except WebSocketDisconnect:
+        logger.info("WebSocket连接已断开")
+    
     except Exception as e:
-        logger.error(f"设置SSE流式响应时出错: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"WebSocket错误: {str(e)}")
 
 if __name__ == '__main__':
     # 这部分代码在使用uvicorn启动时不会执行

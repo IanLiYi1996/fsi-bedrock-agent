@@ -4,8 +4,6 @@ import sys
 import os
 import logging
 from tools.user_info import get_user_profile, get_user_comprehensive_info
-
-
 logger = logging.getLogger(__name__)
 
 @tool
@@ -45,8 +43,8 @@ def user_profile_agent(query: str) -> str:
         7. 建议资产配置：[例如：股票型基金40%，混合型基金30%，债券型基金20%，货币市场基金10%]
         8. 投资建议：[根据用户特点的具体投资建议]
         """,
-        load_tools_from_directory=False,
-        tools=[get_user_profile, get_user_comprehensive_info]
+        tools=[get_user_comprehensive_info, get_user_profile],
+        load_tools_from_directory=False
     )
     
     # 处理查询
