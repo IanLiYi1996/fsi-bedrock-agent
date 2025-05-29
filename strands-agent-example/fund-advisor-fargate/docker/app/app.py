@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="基金投顾API")
 
 # 创建投资组合管理Agent
-portfolio_manager = PortfolioManagerAgent()
+portfolio_manager = PortfolioManagerAgent(load_tools_from_directory=False)
 
 class QueryRequest(BaseModel):
     query: str

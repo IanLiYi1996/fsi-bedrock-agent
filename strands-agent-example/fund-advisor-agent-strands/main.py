@@ -23,7 +23,7 @@ def main():
     try:
         
         # 创建投资组合管理Agent
-        portfolio_manager = PortfolioManagerAgent()
+        portfolio_manager = PortfolioManagerAgent(load_tools_from_directory=False)
         
         # 启动交互循环
         print("\n" + "="*50)
