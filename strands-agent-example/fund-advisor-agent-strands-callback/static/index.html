@@ -1,323 +1,403 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
+    <title>基金投资顾问API测试</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>基金投顾API测试页面</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            color: #333;
+            font-family: Arial, sans-serif;
             max-width: 1000px;
             margin: 0 auto;
+            padding: 20px;
         }
         h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+            color: #333;
+            text-align: center;
         }
         .container {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        .query-form {
-            background-color: #f9f9f9;
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        textarea {
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
             width: 100%;
-            height: 100px;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            resize: vertical;
-            font-family: inherit;
-            margin-bottom: 10px;
+            box-sizing: border-box;
         }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        textarea {
+            height: 100px;
+            resize: vertical;
         }
         button {
-            padding: 10px 15px;
-            background-color: #3498db;
+            background-color: #4CAF50;
             color: white;
             border: none;
+            padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #2980b9;
+            background-color: #45a049;
         }
-        button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-        .response-container {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .output {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
             min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
             white-space: pre-wrap;
-            overflow-wrap: break-word;
         }
-        .tool-usage {
-            background-color: #e8f4f8;
-            padding: 5px 10px;
-            border-radius: 3px;
-            margin: 5px 0;
-            font-style: italic;
-            color: #2980b9;
+        .event {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 4px;
         }
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0,0,0,0.1);
-            border-radius: 50%;
-            border-top-color: #3498db;
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 10px;
-            vertical-align: middle;
+        .event-text {
+            background-color: #e8f5e9;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .event-tool-start {
+            background-color: #e3f2fd;
+        }
+        .event-tool-end {
+            background-color: #e8eaf6;
+        }
+        .event-sub-agent-start {
+            background-color: #fff8e1;
+        }
+        .event-sub-agent-end {
+            background-color: #fff3e0;
+        }
+        .event-sub-agent-tool-start {
+            background-color: #f3e5f5;
+        }
+        .event-sub-agent-tool-end {
+            background-color: #fce4ec;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <h1>基金投顾API测试页面</h1>
+    <h1>基金投资顾问API测试</h1>
     
     <div class="container">
-        <div class="query-form">
-            <h2>输入您的问题</h2>
-            <textarea id="query-input" placeholder="例如：请分析一下易方达中小盘混合基金（110011）的投资价值"></textarea>
-            
-            <div class="button-group">
-                <button id="normal-query-btn">普通查询</button>
-                <button id="stream-query-btn">流式查询（纯文本）</button>
-                <button id="sse-query-btn">流式查询（SSE）</button>
-                <button id="clear-btn">清空结果</button>
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'rest-tab')">REST API</div>
+            <div class="tab" onclick="openTab(event, 'websocket-tab')">WebSocket</div>
+        </div>
+        
+        <div id="rest-tab" class="tab-content active">
+            <div class="card">
+                <h2>REST API测试</h2>
+                <div class="form-group">
+                    <label for="query">查询内容:</label>
+                    <textarea id="query" placeholder="请输入您的问题，例如：我想了解股票型基金"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="stream"> 流式响应
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="include-events"> 包含事件信息
+                    </label>
+                </div>
+                <button onclick="sendQuery()">发送查询</button>
+                <div class="form-group">
+                    <label>响应结果:</label>
+                    <div id="rest-output" class="output"></div>
+                </div>
             </div>
         </div>
         
-        <div class="response-container" id="response-output">
-            <p>响应将显示在这里...</p>
+        <div id="websocket-tab" class="tab-content">
+            <div class="card">
+                <h2>WebSocket测试</h2>
+                <div class="form-group">
+                    <label for="ws-status">连接状态:</label>
+                    <div id="ws-status">未连接</div>
+                    <button id="ws-connect" onclick="connectWebSocket()">连接</button>
+                    <button id="ws-disconnect" onclick="disconnectWebSocket()" disabled>断开</button>
+                </div>
+                <div class="form-group">
+                    <label for="ws-query">查询内容:</label>
+                    <textarea id="ws-query" placeholder="请输入您的问题，例如：我想了解股票型基金"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="ws-include-events"> 包含事件信息
+                    </label>
+                </div>
+                <button id="ws-send" onclick="sendWebSocketMessage()" disabled>发送查询</button>
+                <div class="form-group">
+                    <label>响应结果:</label>
+                    <div id="ws-output" class="output"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const queryInput = document.getElementById('query-input');
-            const normalQueryBtn = document.getElementById('normal-query-btn');
-            const streamQueryBtn = document.getElementById('stream-query-btn');
-            const sseQueryBtn = document.getElementById('sse-query-btn');
-            const clearBtn = document.getElementById('clear-btn');
-            const responseOutput = document.getElementById('response-output');
+        // 全局变量
+        let socket = null;
+        let eventSource = null;
+        
+        // 打开标签页
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].className = tabContents[i].className.replace(" active", "");
+            }
             
-            let controller = null;
+            const tabs = document.getElementsByClassName("tab");
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].className = tabs[i].className.replace(" active", "");
+            }
             
-            // 普通查询
-            normalQueryBtn.addEventListener('click', async function() {
-                const query = queryInput.value.trim();
-                if (!query) {
-                    alert('请输入查询内容');
-                    return;
-                }
-                
-                setLoading(true);
-                responseOutput.textContent = '正在处理您的问题，请稍候...\n';
-                
-                try {
-                    const response = await fetch('/advisor', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            query: query
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    responseOutput.textContent = data.response;
-                } catch (error) {
-                    responseOutput.textContent = `错误: ${error.message}`;
-                } finally {
-                    setLoading(false);
-                }
-            });
+            document.getElementById(tabName).className += " active";
+            evt.currentTarget.className += " active";
+        }
+        
+        // REST API 查询
+        function sendQuery() {
+            const query = document.getElementById("query").value;
+            const stream = document.getElementById("stream").checked;
+            const includeEvents = document.getElementById("include-events").checked;
+            const output = document.getElementById("rest-output");
             
-            // 流式查询（纯文本）
-            streamQueryBtn.addEventListener('click', async function() {
-                const query = queryInput.value.trim();
-                if (!query) {
-                    alert('请输入查询内容');
-                    return;
-                }
-                
-                // 如果有正在进行的请求，取消它
-                if (controller) {
-                    controller.abort();
-                }
-                
-                controller = new AbortController();
-                const signal = controller.signal;
-                
-                setLoading(true);
-                responseOutput.textContent = '';
-                
-                try {
-                    const response = await fetch('/advisor/stream', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            query: query
-                        }),
-                        signal: signal
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const reader = response.body.getReader();
-                    const decoder = new TextDecoder();
-                    
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        
-                        if (done) {
-                            break;
-                        }
-                        
-                        const text = decoder.decode(value);
-                        responseOutput.textContent += text;
-                        
-                        // 自动滚动到底部
-                        responseOutput.scrollTop = responseOutput.scrollHeight;
-                    }
-                } catch (error) {
-                    if (error.name !== 'AbortError') {
-                        responseOutput.textContent += `\n错误: ${error.message}`;
-                    }
-                } finally {
-                    setLoading(false);
-                    controller = null;
-                }
-            });
+            output.innerHTML = "正在发送请求...";
             
-            // 流式查询（SSE）
-            sseQueryBtn.addEventListener('click', function() {
-                const query = queryInput.value.trim();
-                if (!query) {
-                    alert('请输入查询内容');
-                    return;
-                }
+            // 如果有正在进行的EventSource连接，关闭它
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+            }
+            
+            if (stream) {
+                // 流式响应
+                output.innerHTML = "";
                 
-                // 如果有正在进行的SSE连接，关闭它
-                if (window.eventSource) {
-                    window.eventSource.close();
-                }
+                const url = `/query?query=${encodeURIComponent(query)}&stream=true&include_events=${includeEvents}`;
+                eventSource = new EventSource(url);
                 
-                setLoading(true);
-                responseOutput.textContent = '';
-                
-                // 创建SSE连接，使用GET方法
-                const eventSource = new EventSource(`/advisor/stream/events?query=${encodeURIComponent(query)}`);
-                window.eventSource = eventSource;
-                
-                // 处理普通消息
                 eventSource.onmessage = function(event) {
-                    responseOutput.textContent += event.data;
-                    responseOutput.scrollTop = responseOutput.scrollHeight;
-                };
-                
-                // 处理工具使用事件
-                eventSource.addEventListener('tool', function(event) {
-                    const toolDiv = document.createElement('div');
-                    toolDiv.className = 'tool-usage';
-                    toolDiv.textContent = `[使用工具: ${event.data}]`;
-                    responseOutput.appendChild(toolDiv);
-                    responseOutput.scrollTop = responseOutput.scrollHeight;
-                });
-                
-                // 处理完成事件
-                eventSource.addEventListener('complete', function(event) {
-                    eventSource.close();
-                    setLoading(false);
-                });
-                
-                // 处理错误
-                eventSource.addEventListener('error', function(event) {
-                    const errorDiv = document.createElement('div');
-                    errorDiv.style.color = 'red';
-                    errorDiv.textContent = `错误: ${event.data || '连接中断'}`;
-                    responseOutput.appendChild(errorDiv);
-                    eventSource.close();
-                    setLoading(false);
-                });
-                
-                eventSource.onerror = function() {
-                    eventSource.close();
-                    setLoading(false);
-                };
-            });
-            
-            // 清空结果
-            clearBtn.addEventListener('click', function() {
-                responseOutput.textContent = '响应将显示在这里...';
-                
-                // 如果有正在进行的请求，取消它
-                if (controller) {
-                    controller.abort();
-                    controller = null;
-                }
-                
-                // 如果有正在进行的SSE连接，关闭它
-                if (window.eventSource) {
-                    window.eventSource.close();
-                    window.eventSource = null;
-                }
-                
-                setLoading(false);
-            });
-            
-            // 设置加载状态
-            function setLoading(isLoading) {
-                [normalQueryBtn, streamQueryBtn, sseQueryBtn].forEach(btn => {
-                    btn.disabled = isLoading;
+                    const data = event.data;
                     
-                    // 移除现有的加载指示器
-                    const existingLoader = btn.querySelector('.loading');
-                    if (existingLoader) {
-                        btn.removeChild(existingLoader);
+                    if (includeEvents) {
+                        try {
+                            const eventData = JSON.parse(data);
+                            appendEvent(output, eventData);
+                        } catch (e) {
+                            output.innerHTML += data;
+                        }
+                    } else {
+                        output.innerHTML += data;
                     }
                     
-                    // 添加新的加载指示器
-                    if (isLoading) {
-                        const loader = document.createElement('span');
-                        loader.className = 'loading';
-                        btn.appendChild(loader);
-                    }
+                    output.scrollTop = output.scrollHeight;
+                };
+                
+                eventSource.onerror = function(error) {
+                    output.innerHTML += "\n\n连接错误或已关闭";
+                    eventSource.close();
+                    eventSource = null;
+                };
+            } else {
+                // 非流式响应
+                fetch("/query", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        stream: false,
+                        include_events: includeEvents
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    output.innerHTML = data.response;
+                })
+                .catch(error => {
+                    output.innerHTML = `错误: ${error.message}`;
                 });
             }
-        });
+        }
+        
+        // WebSocket 连接
+        function connectWebSocket() {
+            const wsStatus = document.getElementById("ws-status");
+            const wsConnect = document.getElementById("ws-connect");
+            const wsDisconnect = document.getElementById("ws-disconnect");
+            const wsSend = document.getElementById("ws-send");
+            const output = document.getElementById("ws-output");
+            
+            wsStatus.innerHTML = "正在连接...";
+            
+            socket = new WebSocket(`ws://${window.location.host}/ws`);
+            
+            socket.onopen = function(e) {
+                wsStatus.innerHTML = "已连接";
+                wsConnect.disabled = true;
+                wsDisconnect.disabled = false;
+                wsSend.disabled = false;
+                output.innerHTML = "WebSocket连接已建立\n";
+            };
+            
+            socket.onmessage = function(event) {
+                const data = event.data;
+                
+                try {
+                    const eventData = JSON.parse(data);
+                    appendEvent(output, eventData);
+                } catch (e) {
+                    output.innerHTML += data + "\n";
+                }
+                
+                output.scrollTop = output.scrollHeight;
+            };
+            
+            socket.onclose = function(event) {
+                wsStatus.innerHTML = "已断开";
+                wsConnect.disabled = false;
+                wsDisconnect.disabled = true;
+                wsSend.disabled = true;
+                
+                if (event.wasClean) {
+                    output.innerHTML += `\n连接已关闭，代码=${event.code} 原因=${event.reason}\n`;
+                } else {
+                    output.innerHTML += "\n连接已断开\n";
+                }
+            };
+            
+            socket.onerror = function(error) {
+                wsStatus.innerHTML = "连接错误";
+                output.innerHTML += `\n错误: ${error.message}\n`;
+            };
+        }
+        
+        // 断开WebSocket连接
+        function disconnectWebSocket() {
+            if (socket) {
+                socket.close();
+                socket = null;
+            }
+        }
+        
+        // 发送WebSocket消息
+        function sendWebSocketMessage() {
+            if (!socket) {
+                return;
+            }
+            
+            const query = document.getElementById("ws-query").value;
+            const includeEvents = document.getElementById("ws-include-events").checked;
+            const output = document.getElementById("ws-output");
+            
+            const message = {
+                query: query,
+                include_events: includeEvents
+            };
+            
+            socket.send(JSON.stringify(message));
+            output.innerHTML += `\n发送: ${query}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // 添加事件到输出
+        function appendEvent(output, event) {
+            if (event.type === "text") {
+                const div = document.createElement("div");
+                div.className = "event event-text";
+                div.textContent = event.content;
+                output.appendChild(div);
+            } else if (event.type === "tool_start") {
+                const div = document.createElement("div");
+                div.className = "event event-tool-start";
+                div.textContent = `开始使用工具: ${event.tool_name}`;
+                output.appendChild(div);
+            } else if (event.type === "tool_end") {
+                const div = document.createElement("div");
+                div.className = "event event-tool-end";
+                div.textContent = `工具 ${event.tool_name} 执行完成`;
+                output.appendChild(div);
+            } else if (event.type === "sub_agent_start") {
+                const div = document.createElement("div");
+                div.className = "event event-sub-agent-start";
+                div.textContent = `开始调用子Agent: ${event.agent_name}`;
+                output.appendChild(div);
+            } else if (event.type === "sub_agent_end") {
+                const div = document.createElement("div");
+                div.className = "event event-sub-agent-end";
+                div.textContent = `子Agent ${event.agent_name} 执行完成`;
+                output.appendChild(div);
+            } else if (event.type === "sub_agent_tool_start") {
+                const div = document.createElement("div");
+                div.className = "event event-sub-agent-tool-start";
+                div.textContent = `子Agent ${event.agent_name} 开始使用工具: ${event.tool_name}`;
+                output.appendChild(div);
+            } else if (event.type === "sub_agent_tool_end") {
+                const div = document.createElement("div");
+                div.className = "event event-sub-agent-tool-end";
+                div.textContent = `子Agent ${event.agent_name} 的工具 ${event.tool_name} 执行完成`;
+                output.appendChild(div);
+            } else if (event.type === "complete") {
+                const div = document.createElement("div");
+                div.textContent = `\n最终回复: ${event.content}`;
+                output.appendChild(div);
+            } else if (event.type === "error") {
+                const div = document.createElement("div");
+                div.textContent = `错误: ${event.content}`;
+                output.appendChild(div);
+            } else if (event.error) {
+                const div = document.createElement("div");
+                div.textContent = `错误: ${event.error}`;
+                output.appendChild(div);
+            } else {
+                output.innerHTML += JSON.stringify(event) + "\n";
+            }
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,68 @@
+2025-05-30 11:00:18,763 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 11:00:18,800 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 11:04:09,688 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 11:04:09,699 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 11:05:38,669 - agents.portfolio_manager - INFO - 处理用户查询: 我想了解股票型基金
+2025-05-30 11:05:40,183 - app - ERROR - 流式处理查询时出错: An error occurred (ExpiredTokenException) when calling the ConverseStream operation: The security token included in the request is expired
+Traceback (most recent call last):
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-agent-strands-callback/app.py", line 164, in stream_response
+    response = await task
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-agent-strands-callback/app.py", line 191, in process_query_async
+    response = await loop.run_in_executor(None, portfolio_manager.process_query, query)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-agent-strands-callback/agents/portfolio_manager.py", line 105, in process_query
+    response = self.agent(query)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/agent/agent.py", line 343, in __call__
+    result = self._run_loop(prompt, kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/agent/agent.py", line 445, in _run_loop
+    return self._execute_event_loop_cycle(invocation_callback_handler, kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/agent/agent.py", line 472, in _execute_event_loop_cycle
+    stop_reason, message, metrics, state = event_loop_cycle(
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/event_loop/event_loop.py", line 190, in event_loop_cycle
+    raise e
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/event_loop/event_loop.py", line 148, in event_loop_cycle
+    stop_reason, message, usage, metrics, kwargs["request_state"] = stream_messages(
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/event_loop/streaming.py", line 340, in stream_messages
+    return process_stream(chunks, callback_handler, messages, **kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/event_loop/streaming.py", line 290, in process_stream
+    for chunk in chunks:
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/types/models.py", line 115, in converse
+    for event in response:
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/strands/models/bedrock.py", line 252, in stream
+    response = self.client.converse_stream(**request)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/botocore/client.py", line 570, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/botocore/context.py", line 124, in wrapper
+    return func(*args, **kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/botocore/client.py", line 1031, in _make_api_call
+    raise error_class(parsed_response, operation_name)
+botocore.exceptions.ClientError: An error occurred (ExpiredTokenException) when calling the ConverseStream operation: The security token included in the request is expired
+2025-05-30 11:06:13,250 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 11:06:13,259 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 11:06:17,180 - agents.portfolio_manager - INFO - 处理用户查询: 我想了解股票型基金
+2025-05-30 11:06:22,478 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 11:12:55,623 - agents.portfolio_manager - INFO - 处理用户查询: 我想了解股票型基金
+2025-05-30 11:21:27,508 - app - INFO - WebSocket连接已关闭
+2025-05-30 11:26:43,999 - agents.portfolio_manager - INFO - 处理用户查询: 今天是几号
+2025-05-30 11:41:04,567 - app - INFO - WebSocket连接已关闭
+2025-05-30 13:06:05,859 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 13:06:05,870 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:06:12,268 - agents.portfolio_manager - INFO - 处理用户查询: 今天是几号
+2025-05-30 13:30:16,822 - app - INFO - WebSocket连接已关闭
+2025-05-30 13:30:21,361 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 13:30:21,373 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:30:27,694 - agents.portfolio_manager - INFO - 处理用户查询: 今天是几号
+2025-05-30 13:33:23,242 - agents.portfolio_manager - INFO - 处理用户查询: 000001这支基金怎么样
+2025-05-30 13:33:26,327 - agents.strategy_performance_expert - INFO - 调用基金策略与业绩专家: 000001基金分析
+2025-05-30 13:33:26,349 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:33:34,122 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:34:36,271 - agents.comprehensive_holdings_analyst - INFO - 调用综合持仓分析专家: 000001基金持仓分析
+2025-05-30 13:34:36,294 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:39:30,158 - agents.expert_agents - INFO - 调用市场趋势专家: 000001基金市场趋势分析
+2025-05-30 13:39:30,181 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:41:00,649 - agents.analysis_agents - INFO - 调用基金费用分析专家: 000001基金费用分析
+2025-05-30 13:41:00,678 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 13:41:20,968 - agents.analysis_agents - INFO - 调用基金经理分析专家: 000001基金经理分析
+2025-05-30 13:41:20,984 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:02:59,173 - app - INFO - WebSocket连接已关闭
