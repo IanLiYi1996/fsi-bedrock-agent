@@ -10,6 +10,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 logger = logging.getLogger(__name__)
 from tools.stock_info import get_stock_info_by_code, get_stock_news_by_code, get_stock_performance_by_code
 from tools.fund_info import get_fund_by_code, get_fund_holdings_by_code, get_fund_performance_by_code
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 @tool
 def comprehensive_holdings_analyst(query: str) -> str:
@@ -22,8 +24,14 @@ def comprehensive_holdings_analyst(query: str) -> str:
     """
     logger.info(f"调用综合持仓分析专家: {query}")
     
-    # 创建分析Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "持仓分析师",
+        parent_callback,
         system_prompt="""你是综合持仓分析专家，负责分析基金的持仓结构、行业分布、重仓股以及持仓股票的表现和相关资讯，
         判断基金真实盈利可能性和表现是否与持仓信息相符。
         

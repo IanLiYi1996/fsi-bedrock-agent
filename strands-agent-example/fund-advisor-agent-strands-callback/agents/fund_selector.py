@@ -9,6 +9,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = logging.getLogger(__name__)
 from tools.fund_info import get_fund_by_code, get_fund_search_results, get_fund_fees_by_code, get_fund_manager_by_code, get_fund_performance_by_code
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 @tool
 def fund_selector_agent(query: str) -> str:
@@ -20,8 +22,14 @@ def fund_selector_agent(query: str) -> str:
     """
     logger.info(f"调用基金筛选专家: {query}")
     
-    # 创建基金筛选Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "基金筛选",
+        parent_callback,
         system_prompt="""你是基金筛选专家，负责根据用户偏好和投资目标筛选合适的基金。
         你需要考虑基金类型、风险等级、历史业绩和费用结构等多维度因素。
         当筛选基金时，你应该根据用户的风险偏好、投资期限和投资目标，找到最匹配的基金产品。

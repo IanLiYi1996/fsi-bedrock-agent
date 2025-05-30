@@ -66,3 +66,36 @@ botocore.exceptions.ClientError: An error occurred (ExpiredTokenException) when 
 2025-05-30 13:41:20,968 - agents.analysis_agents - INFO - 调用基金经理分析专家: 000001基金经理分析
 2025-05-30 13:41:20,984 - botocore.credentials - INFO - Found credentials in environment variables.
 2025-05-30 14:02:59,173 - app - INFO - WebSocket连接已关闭
+2025-05-30 14:15:47,041 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 14:15:47,051 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:16:13,676 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-05-30 14:30:39,722 - app - INFO - WebSocket连接已关闭
+2025-05-30 14:30:44,230 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 14:30:44,246 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:30:53,583 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-05-30 14:31:22,371 - agents.portfolio_manager - INFO - 处理用户查询: 000001这个基金怎么样
+2025-05-30 14:31:25,789 - agents.strategy_performance_expert - INFO - 调用基金策略与业绩专家: 000001
+2025-05-30 14:31:25,801 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:31:33,309 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:32:39,375 - agents.comprehensive_holdings_analyst - INFO - 调用综合持仓分析专家: 000001
+2025-05-30 14:32:39,402 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:36:11,583 - agents.analysis_agents - INFO - 调用基金经理分析专家: 000001
+2025-05-30 14:36:11,604 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:36:27,672 - agents.analysis_agents - INFO - 调用基金费用分析专家: 000001
+2025-05-30 14:36:27,686 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 14:36:43,146 - agents.expert_agents - INFO - 调用市场趋势专家: 000001对应的华夏成长混合基金在当前市场环境下的表现如何？
+2025-05-30 14:36:43,172 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:24:22,625 - app - INFO - WebSocket连接已关闭
+2025-05-30 16:27:27,933 - agents.portfolio_manager - INFO - 处理用户查询: 000001这个基金怎么样
+2025-05-30 16:28:13,245 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 16:28:13,257 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:28:19,257 - agents.portfolio_manager - INFO - 处理用户查询: 000001这个基金怎么样
+2025-05-30 16:28:24,210 - agents.strategy_performance_expert - INFO - 调用基金策略与业绩专家: 000001基金分析
+2025-05-30 16:28:24,231 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:28:55,699 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:29:50,583 - agents.comprehensive_holdings_analyst - INFO - 调用综合持仓分析专家: 000001基金持仓分析
+2025-05-30 16:29:50,605 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:32:28,032 - agents.analysis_agents - INFO - 调用基金经理分析专家: 华夏成长混合000001基金经理
+2025-05-30 16:32:28,041 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:32:45,407 - agents.analysis_agents - INFO - 调用基金费用分析专家: 华夏成长混合000001基金费用
+2025-05-30 16:32:45,430 - botocore.credentials - INFO - Found credentials in environment variables.

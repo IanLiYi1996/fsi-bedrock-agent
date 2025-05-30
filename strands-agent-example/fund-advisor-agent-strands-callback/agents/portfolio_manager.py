@@ -14,17 +14,28 @@ from agents.analysis_agents import manager_analyst, fees_analyst
 from agents.user_profile import user_profile_agent
 from agents.fund_selector import fund_selector_agent
 from strands_tools import mem0_memory,current_time, retrieve
+from utils.context_utils import get_current_callback_handler, set_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 
 logger = logging.getLogger(__name__)
 
 class PortfolioManagerAgent:
-    def __init__(self):
-        """初始化投资组合管理Agent"""
+    def __init__(self, callback_handler=None):
+        """
+        初始化投资组合管理Agent
+        
+        Args:
+            callback_handler: 回调处理器，用于处理事件
+        """
         logger.info("初始化投资组合管理Agent")
+        
+        # 保存回调处理器
+        self.callback_handler = callback_handler
         
         # 创建投资组合管理Agent
         self.agent = Agent(
+            callback_handler=callback_handler,
             system_prompt="""你是专业的基金投资组合管理专家，为用户提供个性化的基金投资建议和分析服务。你将根据用户需求，整合市场数据、基金表现和专业分析，提供清晰、实用的投资指导。
             ## 核心职责
             - 回答基金投资问题，提供专业知识和市场洞察

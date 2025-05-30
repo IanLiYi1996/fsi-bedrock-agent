@@ -8,7 +8,9 @@ import logging
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = logging.getLogger(__name__)
-from tools.fund_info import get_fund_by_code, get_fund_performance_by_code,get_fund_individual_analysis_by_code
+from tools.fund_info import get_fund_by_code, get_fund_performance_by_code, get_fund_individual_analysis_by_code
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 @tool
 def strategy_performance_expert(query: str) -> str:
@@ -20,8 +22,14 @@ def strategy_performance_expert(query: str) -> str:
     """
     logger.info(f"调用基金策略与业绩专家: {query}")
     
-    # 创建专家Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "策略专家",
+        parent_callback,
         system_prompt="""你是基金策略与业绩专家，负责分析基金的投资策略、风格以及历史业绩、波动性和风险调整收益。
         你需要评估基金的投资理念、策略执行一致性、适应市场变化的能力，以及在不同时间段的表现、与基准的对比以及风险调整后的收益指标。
         
@@ -61,7 +69,7 @@ def strategy_performance_expert(query: str) -> str:
         5. 投资建议：[适合投资/谨慎投资/不建议投资]
         6. 建议理由：[给出投资建议的具体理由]
         """,
-        tools=[get_fund_by_code, get_fund_performance_by_code,get_fund_individual_analysis_by_code],
+        tools=[get_fund_by_code, get_fund_performance_by_code, get_fund_individual_analysis_by_code],
         load_tools_from_directory=False
     )
     

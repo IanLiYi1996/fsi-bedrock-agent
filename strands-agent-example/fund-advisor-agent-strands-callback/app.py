@@ -65,7 +65,18 @@ class QueryResponse(BaseModel):
     events: Optional[List[Dict[str, Any]]] = None
 
 # 创建投资组合管理Agent
-portfolio_manager = PortfolioManagerAgent()
+from utils.context_utils import set_current_callback_handler
+from utils.callback_handlers import CompositeCallbackHandler
+
+# 创建回调处理器
+logging_handler = LoggingCallbackHandler()
+composite_handler = CompositeCallbackHandler([logging_handler])
+
+# 设置线程本地存储的callback处理器
+set_current_callback_handler(composite_handler)
+
+# 创建投资组合管理Agent，并传入回调处理器
+portfolio_manager = PortfolioManagerAgent(callback_handler=composite_handler)
 
 @app.get("/")
 async def root():

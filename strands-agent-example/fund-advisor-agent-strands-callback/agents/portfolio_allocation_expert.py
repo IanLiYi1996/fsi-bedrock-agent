@@ -8,6 +8,8 @@ import logging
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agents.comprehensive_holdings_analyst import comprehensive_holdings_analyst
 from tools.user_info import get_user_comprehensive_info, get_user_holdings
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +23,14 @@ def portfolio_allocation_expert(query: str) -> str:
     """
     logger.info(f"调用投资组合与资产配置专家: {query}")
     
-    # 创建专家Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "配置专家",
+        parent_callback,
         system_prompt="""你是投资组合与资产配置专家，负责分析用户持仓基金的投资价值和风险，以及资产配置和多元化投资组合构建。
         你需要评估用户的整体投资组合，分析各基金的表现、风险和相互关系，考虑相关性、分散化效果和风险贡献，并根据用户的风险偏好和投资期限给出持有或调仓建议。
         

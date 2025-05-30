@@ -352,11 +352,24 @@ class StreamingCallbackHandler(BaseCallbackHandler):
     def on_text_generation(self, text: str, complete: bool):
         """处理文本生成事件"""
         if text:
+            # 检查文本是否包含子agent标识
+            agent_prefix = None
+            for prefix in ["[策略专家]", "[持仓分析师]", "[配置专家]", "[市场趋势专家]", "[经理分析师]", "[费用分析师]", "[用户画像]", "[基金筛选]"]:
+                if text.startswith(prefix):
+                    agent_prefix = prefix.strip("[]")
+                    text = text[len(prefix):].lstrip()
+                    break
+            
             event = {
                 "type": EventType.TEXT,
                 "content": text,
                 "complete": complete
             }
+            
+            # 如果有agent标识，添加到事件中
+            if agent_prefix:
+                event["agent_name"] = agent_prefix
+                
             self.events.append(event)
             self.buffer.append(text)
     

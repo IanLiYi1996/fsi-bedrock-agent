@@ -350,17 +350,44 @@
             if (event.type === "text") {
                 const div = document.createElement("div");
                 div.className = "event event-text";
-                div.textContent = event.content;
+                
+                // 检查是否有agent标识
+                if (event.agent_name) {
+                    const agentClass = `agent-${event.agent_name.replace(/\s+/g, '-').toLowerCase()}`;
+                    div.className += ` ${agentClass}`;
+                    div.textContent = `[${event.agent_name}] ${event.content}`;
+                } else {
+                    div.textContent = event.content;
+                }
+                
                 output.appendChild(div);
             } else if (event.type === "tool_start") {
                 const div = document.createElement("div");
                 div.className = "event event-tool-start";
-                div.textContent = `开始使用工具: ${event.tool_name}`;
+                
+                // 检查是否有agent标识
+                if (event.agent_name) {
+                    const agentClass = `agent-${event.agent_name.replace(/\s+/g, '-').toLowerCase()}`;
+                    div.className += ` ${agentClass}`;
+                    div.textContent = `[${event.agent_name}] 开始使用工具: ${event.tool_name}`;
+                } else {
+                    div.textContent = `开始使用工具: ${event.tool_name}`;
+                }
+                
                 output.appendChild(div);
             } else if (event.type === "tool_end") {
                 const div = document.createElement("div");
                 div.className = "event event-tool-end";
-                div.textContent = `工具 ${event.tool_name} 执行完成`;
+                
+                // 检查是否有agent标识
+                if (event.agent_name) {
+                    const agentClass = `agent-${event.agent_name.replace(/\s+/g, '-').toLowerCase()}`;
+                    div.className += ` ${agentClass}`;
+                    div.textContent = `[${event.agent_name}] 工具 ${event.tool_name} 执行完成`;
+                } else {
+                    div.textContent = `工具 ${event.tool_name} 执行完成`;
+                }
+                
                 output.appendChild(div);
             } else if (event.type === "sub_agent_start") {
                 const div = document.createElement("div");

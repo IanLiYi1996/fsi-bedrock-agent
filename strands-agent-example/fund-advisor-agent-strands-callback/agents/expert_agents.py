@@ -9,6 +9,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = logging.getLogger(__name__)
 from tools.economic_info import get_macro_china_cpi, get_macro_china_lpr, get_stock_index, get_stock_market_activity, get_macro_china_ppi
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 # 市场趋势专家Agent
 @tool
@@ -21,8 +23,14 @@ def market_trend_expert(query: str) -> str:
     """
     logger.info(f"调用市场趋势专家: {query}")
     
-    # 创建专家Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "市场趋势专家",
+        parent_callback,
         system_prompt="""你是市场趋势专家，分析宏观经济和市场趋势对基金的影响。
         你需要评估当前和未来市场环境对不同类型基金的潜在影响。
         当分析基金时，你应该关注经济周期、利率环境、行业轮动和市场风格转换对基金表现的影响。

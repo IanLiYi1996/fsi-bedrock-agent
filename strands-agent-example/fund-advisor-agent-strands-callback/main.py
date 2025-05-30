@@ -31,9 +31,6 @@ def setup_agent_with_callbacks():
     Returns:
         配置好的PortfolioManagerAgent实例
     """
-    # 创建投资组合管理Agent
-    portfolio_manager = PortfolioManagerAgent()
-    
     # 创建回调处理器
     console_handler = ConsoleCallbackHandler()
     logging_handler = LoggingCallbackHandler()
@@ -41,8 +38,12 @@ def setup_agent_with_callbacks():
     # 使用组合回调处理器
     composite_handler = CompositeCallbackHandler([console_handler, logging_handler])
     
-    # 设置回调处理器
-    portfolio_manager.agent.callback_handler = composite_handler
+    # 设置线程本地存储的callback处理器
+    from utils.context_utils import set_current_callback_handler
+    set_current_callback_handler(composite_handler)
+    
+    # 创建投资组合管理Agent，并传入回调处理器
+    portfolio_manager = PortfolioManagerAgent(callback_handler=composite_handler)
     
     return portfolio_manager
 
