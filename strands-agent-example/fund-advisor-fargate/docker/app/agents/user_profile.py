@@ -4,6 +4,9 @@ import sys
 import os
 import logging
 from tools.user_info import get_user_profile, get_user_comprehensive_info
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
+
 logger = logging.getLogger(__name__)
 
 @tool
@@ -16,8 +19,14 @@ def user_profile_agent(query: str) -> str:
     """
     logger.info(f"调用用户画像分析专家: {query}")
     
-    # 创建用户画像Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "用户画像",
+        parent_callback,
         system_prompt="""你是用户画像分析专家，负责分析用户的风险偏好、投资目标、投资期限和流动性需求。
         你需要通过用户提供的信息，建立完整的投资者画像，为基金推荐提供依据。
         当分析用户时，你应该关注用户的风险承受能力、投资期限、流动性需求、投资目标和偏好行业或主题。

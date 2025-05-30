@@ -51,6 +51,7 @@ def main():
     """主函数"""
     # 加载环境变量
     load_dotenv()
+    os.environ["KNOWLEDGE_BASE_ID"] = "DDBX9Y6VJ6"
     
     # 解析命令行参数
     parser = argparse.ArgumentParser(description='基金投资顾问Agent')

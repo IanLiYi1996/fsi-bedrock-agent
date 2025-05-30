@@ -99,3 +99,29 @@ botocore.exceptions.ClientError: An error occurred (ExpiredTokenException) when 
 2025-05-30 16:32:28,041 - botocore.credentials - INFO - Found credentials in environment variables.
 2025-05-30 16:32:45,407 - agents.analysis_agents - INFO - 调用基金费用分析专家: 华夏成长混合000001基金费用
 2025-05-30 16:32:45,430 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:42:48,891 - app - INFO - WebSocket连接已关闭
+2025-05-30 16:42:54,292 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 16:42:54,304 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:43:06,063 - agents.portfolio_manager - INFO - 处理用户查询: 000001这个基金怎么样
+2025-05-30 16:43:10,553 - agents.strategy_performance_expert - INFO - 调用基金策略与业绩专家: 000001基金的投资策略、业绩表现和风险情况分析
+2025-05-30 16:43:10,571 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:43:19,725 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:44:15,289 - agents.comprehensive_holdings_analyst - INFO - 调用综合持仓分析专家: 000001基金持仓分析，包括行业分布、重仓股分析和持仓质量
+2025-05-30 16:44:15,298 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:47:24,088 - agents.analysis_agents - INFO - 调用基金费用分析专家: 华夏成长混合基金(000001)的费用情况分析
+2025-05-30 16:47:24,111 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:47:41,501 - agents.analysis_agents - INFO - 调用基金经理分析专家: 华夏成长混合基金(000001)基金经理分析
+2025-05-30 16:47:41,516 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:48:02,330 - agents.expert_agents - INFO - 调用市场趋势专家: 当前市场环境下华夏成长混合基金(000001)的投资前景分析
+2025-05-30 16:48:02,347 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 16:54:05,983 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-05-30 16:55:58,331 - agents.portfolio_manager - INFO - 处理用户查询: 指数型基金是什么
+2025-05-30 16:57:56,512 - app - INFO - WebSocket连接已关闭
+2025-05-30 17:09:49,632 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-05-30 17:09:49,643 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 17:09:53,685 - agents.portfolio_manager - INFO - 处理用户查询: 我想了解股票型基金
+2025-05-30 17:09:58,854 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 17:10:03,927 - agents.strategy_performance_expert - INFO - 调用基金策略与业绩专家: 股票型基金是什么？特点、分类、风险收益特征
+2025-05-30 17:10:03,944 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-05-30 17:10:38,478 - agents.expert_agents - INFO - 调用市场趋势专家: 当前股票型基金市场趋势和前景
+2025-05-30 17:10:38,498 - botocore.credentials - INFO - Found credentials in environment variables.

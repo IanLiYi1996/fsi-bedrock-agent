@@ -7,6 +7,8 @@ import logging
 # 添加项目根目录到Python路径，以便导入其他模块
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tools.fund_info import get_fund_fees_by_code, get_fund_manager_by_code
+from utils.context_utils import get_current_callback_handler
+from utils.agent_utils import create_agent_with_parent_callback
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +23,14 @@ def manager_analyst(query: str) -> str:
     """
     logger.info(f"调用基金经理分析专家: {query}")
     
-    # 创建分析Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "经理分析师",
+        parent_callback,
         system_prompt="""你是基金经理分析专家，负责评估基金经理的投资风格、历史业绩和管理能力。
         你需要分析基金经理的从业经历、管理业绩和投资理念。
         当分析基金经理时，你应该关注其从业年限、历史管理业绩、投资风格一致性和团队稳定性。
@@ -54,8 +62,14 @@ def fees_analyst(query: str) -> str:
     """
     logger.info(f"调用基金费用分析专家: {query}")
     
-    # 创建分析Agent
-    agent = Agent(
+    # 获取当前上下文中的callback处理器
+    parent_callback = get_current_callback_handler()
+    
+    # 使用工具函数创建带有父级callback处理器的agent
+    agent = create_agent_with_parent_callback(
+        Agent,
+        "费用分析师",
+        parent_callback,
         system_prompt="""你是基金费用分析专家，负责分析基金的各项费用及其对长期收益的影响。
         你需要评估基金的管理费、托管费、申购赎回费等各项费用结构。
         当分析基金费用时，你应该关注费率水平、费用对长期收益的影响以及与同类基金的费率比较。

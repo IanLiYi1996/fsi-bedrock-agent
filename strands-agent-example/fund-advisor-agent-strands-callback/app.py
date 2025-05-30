@@ -22,6 +22,7 @@ from utils.callback_handlers import StreamingCallbackHandler, LoggingCallbackHan
 
 # 加载环境变量
 load_dotenv()
+os.environ["KNOWLEDGE_BASE_ID"] = "DDBX9Y6VJ6"
 
 # 配置日志
 logging.basicConfig(
