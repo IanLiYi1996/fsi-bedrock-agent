@@ -120,6 +120,29 @@ aws cloudformation describe-stacks --stack-name FundAdvisorFargateStack --query 
 # 测试API
 curl -X POST http://<endpoint>/advisor -H "Content-Type: application/json" -d '{"query":"推荐一些低风险基金"}'
 ```
+## 本地测试
+#### Local testing (python)
+You can run the python app directly for local testing via:
+```
+python ./docker/app/app.py
+```
+Then, set the SERVICE_URL to point to your local server
+```
+SERVICE_URL=127.0.0.1:8000
+```
+and you can use the curl commands above to test locally.
+
+#### Local testing (container)
+Build & run the container:
+```
+docker build ./docker/ -t agent_container
+docker run -p 127.0.0.1:8000:8000 -t agent_container
+```
+Then, set the SERVICE_URL to point to your local server
+```
+SERVICE_URL=127.0.0.1:8000
+```
+and you can use the curl commands above to test locally.
 
 ## 性能优化
 
@@ -182,12 +205,16 @@ eventSource.onerror = function(error) {
 };
 ```
 
-## 扩展和优化建议
-
-1. **添加API网关**：为API添加认证、限流和缓存
-2. **添加CDN**：使用CloudFront加速静态资源
-3. **自动扩展策略优化**：基于预测模型进行主动扩展
-4. **蓝绿部署**：实现零停机更新
+## 清理
+To remove all resources created by this example:
+```
+npx cdk destroy
+```
+或者执行
+```
+cd scripts
+sh destroy.sh
+```
 
 ## 故障排除
 
