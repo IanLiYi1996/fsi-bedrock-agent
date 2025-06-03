@@ -23,6 +23,10 @@ COPY app/utils/ ./app/utils/
 
 # 创建非root用户运行应用
 RUN useradd -m appuser
+
+# 创建日志目录并设置权限
+RUN mkdir -p /app/logs && chown -R appuser:appuser /app/logs
+
 USER appuser
 
 # 暴露应用端口

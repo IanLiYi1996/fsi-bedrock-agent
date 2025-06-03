@@ -121,35 +121,6 @@ aws cloudformation describe-stacks --stack-name FundAdvisorFargateStack --query 
 curl -X POST http://<endpoint>/advisor -H "Content-Type: application/json" -d '{"query":"推荐一些低风险基金"}'
 ```
 
-## API参考
-
-### 同步API
-
-**端点**: `/advisor`  
-**方法**: POST  
-**请求体**:
-```json
-{
-  "query": "推荐一些低风险基金",
-  "session_id": "optional-session-id"
-}
-```
-**响应**:
-```json
-{
-  "response": "基于您的需求，以下是几只低风险基金推荐：...",
-  "session_id": "session-id",
-  "status": "success"
-}
-```
-
-### 流式API
-
-**端点**: `/advisor/stream`  
-**方法**: POST  
-**请求体**: 同上  
-**响应**: 文本流，逐步返回响应内容
-
 ## 性能优化
 
 本项目在Fargate部署中进行了以下性能优化：
@@ -175,13 +146,48 @@ curl -X POST http://<endpoint>/advisor -H "Content-Type: application/json" -d '{
 - **告警设置**：关键指标超阈值时触发告警
 - **健康检查**：ALB定期检查应用健康状态
 
+## API接口
+
+### 主要接口
+
+- **POST /query**：处理用户查询，支持流式和非流式响应
+- **GET /sse**：SSE（Server-Sent Events）接口，用于服务器推送事件
+- **WebSocket /ws**：WebSocket接口，用于实时交互
+
+### SSE接口使用
+
+SSE（Server-Sent Events）是一种服务器推送技术，允许服务器向客户端推送数据。使用方法：
+
+```
+GET /sse?query=推荐一些低风险基金&include_events=true
+```
+
+参数说明：
+- `query`：用户查询内容（必需）
+- `include_events`：是否包含事件信息（可选，默认为false）
+
+客户端示例代码：
+
+```javascript
+const eventSource = new EventSource('/sse?query=推荐一些低风险基金&include_events=true');
+
+eventSource.onmessage = function(event) {
+  const data = JSON.parse(event.data);
+  console.log(data);
+};
+
+eventSource.onerror = function(error) {
+  console.error('EventSource failed:', error);
+  eventSource.close();
+};
+```
+
 ## 扩展和优化建议
 
 1. **添加API网关**：为API添加认证、限流和缓存
-2. **实现WebSocket**：支持实时交互体验
-3. **添加CDN**：使用CloudFront加速静态资源
-4. **自动扩展策略优化**：基于预测模型进行主动扩展
-5. **蓝绿部署**：实现零停机更新
+2. **添加CDN**：使用CloudFront加速静态资源
+3. **自动扩展策略优化**：基于预测模型进行主动扩展
+4. **蓝绿部署**：实现零停机更新
 
 ## 故障排除
 

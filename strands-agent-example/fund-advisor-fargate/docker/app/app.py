@@ -21,7 +21,9 @@ from utils.callback_handlers import StreamingCallbackHandler, LoggingCallbackHan
 
 # 加载环境变量
 load_dotenv()
-os.environ["KNOWLEDGE_BASE_ID"] = "DDBX9Y6VJ6"
+# 如果环境变量中没有KNOWLEDGE_BASE_ID，则使用默认值
+if "KNOWLEDGE_BASE_ID" not in os.environ:
+    os.environ["KNOWLEDGE_BASE_ID"] = "DDBX9Y6VJ6"
 
 # 配置日志
 logging.basicConfig(
@@ -29,7 +31,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("fund_advisor_api.log")
+        logging.FileHandler("/app/logs/fund_advisor_api.log")
     ]
 )
 logger = logging.getLogger(__name__)
@@ -289,6 +291,30 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.info("WebSocket连接已关闭")
     except Exception as e:
         logger.error(f"WebSocket连接出错: {e}", exc_info=True)
+
+@app.get("/sse")
+async def sse(query: str, include_events: bool = False):
+    """
+    SSE端点，用于服务器发送事件
+    
+    Args:
+        query: 用户查询
+        include_events: 是否包含事件信息
+    
+    Returns:
+        服务器发送的事件流
+    """
+    headers = {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+    }
+    
+    return StreamingResponse(
+        stream_response(query, include_events),
+        media_type="text/event-stream",
+        headers=headers
+    )
 
 if __name__ == '__main__':
     # 这部分代码在使用uvicorn启动时不会执行

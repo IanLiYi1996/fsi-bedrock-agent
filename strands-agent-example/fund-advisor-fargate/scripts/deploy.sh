@@ -69,4 +69,7 @@ API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name FundAdvisorFargat
 
 echo "${GREEN}部署完成!${NC}"
 echo "${GREEN}API端点: ${YELLOW}http://$API_ENDPOINT${NC}"
-echo "${GREEN}测试API: ${YELLOW}curl -X POST http://$API_ENDPOINT/advisor -H \"Content-Type: application/json\" -d '{\"query\":\"推荐一些低风险基金\"}'${NC}"
+echo "${GREEN}测试API示例:${NC}"
+echo "${YELLOW}1. POST请求: curl -X POST http://$API_ENDPOINT/query -H \"Content-Type: application/json\" -d '{\"query\":\"推荐一些低风险基金\"}'${NC}"
+echo "${YELLOW}2. SSE接口: curl \"http://$API_ENDPOINT/sse?query=推荐一些低风险基金\"${NC}"
+echo "${YELLOW}3. 带事件的SSE接口: curl \"http://$API_ENDPOINT/sse?query=推荐一些低风险基金&include_events=true\"${NC}"
