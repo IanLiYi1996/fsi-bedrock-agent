@@ -14,17 +14,15 @@
     "package": "python ./bin/package_for_lambda.py"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.1",
-    "@types/node": "20.1.0",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
-    "aws-cdk": "2.87.0",
-    "ts-node": "^10.9.1",
-    "typescript": "~5.0.4"
+    "@types/node": "22.15.3",
+    "aws-cdk": "2.1012.0",
+    "prettier": "~3.5.3",
+    "tsx": "^4.7.0",
+    "typescript": "~5.8.3",
+    "vitest": "^3.1.2"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.87.0",
-    "constructs": "^10.2.0",
-    "source-map-support": "^0.5.21"
+    "aws-cdk-lib": "2.192.0",
+    "constructs": "^10.2.0"
   }
 }

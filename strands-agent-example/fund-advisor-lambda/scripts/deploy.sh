@@ -15,13 +15,27 @@ echo "项目根目录: $PROJECT_ROOT"
 echo "=== 安装Node.js依赖 ==="
 npm install
 
+rm -rf ./venv
+# 安装Python
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install --upgrade pip
+
 # 安装Python依赖（用于本地开发）
 echo "=== 安装Python依赖（用于本地开发） ==="
 pip install -r requirements.txt
 
 # 安装Lambda依赖（用于Lambda部署）
 echo "=== 安装Lambda依赖（用于Lambda部署） ==="
-pip install -r requirements.txt --platform manylinux2014_aarch64 --target ./packaging/_dependencies --only-binary=:all:
+rm -rf packaging/_dependencies/*
+pip install -r requirements.txt --platform manylinux2014_x86_64 --target ./packaging/_dependencies --only-binary=:all:
+pip install -r requirements-extra.txt --platform manylinux2014_x86_64 --target ./packaging/_dependencies --only-binary=:all:
+pip install "jsonpath>=0.82" --no-deps --platform manylinux2014_x86_64 --target ./packaging/_dependencies
+pip install akshare --no-deps --platform manylinux2014_x86_64 --target ./packaging/_dependencies
+
+
+echo "${YELLOW}清理旧的构建目录...${NC}"
+rm -rf dist
 
 # 打包Lambda函数
 echo "=== 打包Lambda函数 ==="

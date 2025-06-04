@@ -8,6 +8,15 @@ Lambda处理程序，处理基金顾问查询
 from agents.portfolio_manager import PortfolioManagerAgent
 from utils.callback_handlers import LoggingCallbackHandler
 from typing import Dict, Any
+from dotenv import load_dotenv
+import os
+
+
+# 加载环境变量
+load_dotenv()
+# 如果环境变量中没有KNOWLEDGE_BASE_ID，则使用默认值
+if "KNOWLEDGE_BASE_ID" not in os.environ:
+    os.environ["KNOWLEDGE_BASE_ID"] = "DDBX9Y6VJ6"
 
 def handler(event: Dict[str, Any], context) -> Dict[str, Any]:
     """

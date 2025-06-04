@@ -92,7 +92,7 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
 # 安装Lambda依赖
-pip install -r requirements.txt --platform manylinux2014_aarch64 --target ./packaging/_dependencies --only-binary=:all:
+pip install -r requirements.txt --platform manylinux2014_x86_64 --target ./packaging/_dependencies --only-binary=:all:
 ```
 
 ### 2. 打包Lambda函数
