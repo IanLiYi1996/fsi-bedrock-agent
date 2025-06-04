@@ -1,3 +1,10 @@
+"""
+投资组合与资产配置专家模块
+
+此模块提供了投资组合与资产配置专家工具函数，用于分析用户持仓基金的投资价值和风险，
+以及资产配置和多元化投资组合构建。
+"""
+
 from strands import Agent, tool
 from typing import Dict, Any
 import sys
@@ -5,7 +12,8 @@ import os
 import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 在Lambda环境中，我们需要调整导入路径
+sys.path.append("/var/task")  # Lambda函数代码的根目录
 from agents.comprehensive_holdings_analyst import comprehensive_holdings_analyst
 from tools.user_info import get_user_comprehensive_info, get_user_holdings
 from utils.context_utils import get_current_callback_handler
@@ -20,6 +28,9 @@ def portfolio_allocation_expert(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含用户ID或投资组合信息
+        
+    Returns:
+        str: 投资组合分析和建议
     """
     logger.info(f"调用投资组合与资产配置专家: {query}")
     

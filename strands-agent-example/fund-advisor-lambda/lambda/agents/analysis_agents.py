@@ -1,3 +1,10 @@
+"""
+基金分析专家模块
+
+此模块提供了基金经理分析和费用分析专家工具函数，用于评估基金经理的投资风格、历史业绩和管理能力，
+以及分析基金的各项费用及其对长期收益的影响。
+"""
+
 from strands import Agent, tool
 from typing import Dict, Any
 import sys
@@ -5,7 +12,8 @@ import os
 import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 在Lambda环境中，我们需要调整导入路径
+sys.path.append("/var/task")  # Lambda函数代码的根目录
 from tools.fund_info import get_fund_fees_by_code, get_fund_manager_by_code
 from utils.context_utils import get_current_callback_handler
 from utils.agent_utils import create_agent_with_parent_callback
@@ -20,6 +28,9 @@ def manager_analyst(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含基金代码
+        
+    Returns:
+        str: 基金经理分析和评估
     """
     logger.info(f"调用基金经理分析专家: {query}")
     
@@ -59,6 +70,9 @@ def fees_analyst(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含基金代码
+        
+    Returns:
+        str: 基金费用分析和评估
     """
     logger.info(f"调用基金费用分析专家: {query}")
     

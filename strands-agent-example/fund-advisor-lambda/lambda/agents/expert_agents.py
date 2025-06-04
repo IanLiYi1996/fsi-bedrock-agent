@@ -1,3 +1,9 @@
+"""
+市场趋势专家模块
+
+此模块提供了市场趋势专家工具函数，用于分析宏观经济和市场趋势对基金的影响。
+"""
+
 from strands import Agent, tool
 from typing import Dict, Any
 import sys
@@ -5,7 +11,8 @@ import os
 import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 在Lambda环境中，我们需要调整导入路径
+sys.path.append("/var/task")  # Lambda函数代码的根目录
 
 logger = logging.getLogger(__name__)
 from tools.economic_info import get_macro_china_cpi, get_macro_china_lpr, get_stock_index, get_stock_market_activity, get_macro_china_ppi
@@ -20,6 +27,9 @@ def market_trend_expert(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含基金代码
+        
+    Returns:
+        str: 市场趋势分析和建议
     """
     logger.info(f"调用市场趋势专家: {query}")
     

@@ -84,6 +84,10 @@ cd fund-advisor-lambda
 # 安装Node.js依赖
 npm install
 
+# Create a Python virtual environment (optional but recommended)
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
 # 安装Python依赖
 pip install -r requirements.txt
 

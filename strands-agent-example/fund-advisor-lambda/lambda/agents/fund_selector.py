@@ -1,3 +1,9 @@
+"""
+基金筛选专家模块
+
+此模块提供了基金筛选专家工具函数，用于根据用户偏好和投资目标筛选合适的基金。
+"""
+
 from strands import Agent, tool
 from typing import Dict, Any
 import sys
@@ -5,7 +11,8 @@ import os
 import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 在Lambda环境中，我们需要调整导入路径
+sys.path.append("/var/task")  # Lambda函数代码的根目录
 
 logger = logging.getLogger(__name__)
 from tools.fund_info import get_fund_by_code, get_fund_search_results, get_fund_fees_by_code, get_fund_manager_by_code, get_fund_performance_by_code
@@ -19,6 +26,9 @@ def fund_selector_agent(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含用户画像信息
+        
+    Returns:
+        str: 基金筛选结果和投资建议
     """
     logger.info(f"调用基金筛选专家: {query}")
     

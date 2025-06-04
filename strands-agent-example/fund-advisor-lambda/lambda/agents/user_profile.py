@@ -1,8 +1,18 @@
+"""
+用户画像分析专家模块
+
+此模块提供了用户画像分析专家工具函数，用于分析用户的风险偏好、投资目标、投资期限和流动性需求。
+"""
+
 from strands import Agent, tool
 from typing import Dict, Any
 import sys
 import os
 import logging
+
+# 添加项目根目录到Python路径，以便导入其他模块
+# 在Lambda环境中，我们需要调整导入路径
+sys.path.append("/var/task")  # Lambda函数代码的根目录
 from tools.user_info import get_user_profile, get_user_comprehensive_info
 from utils.context_utils import get_current_callback_handler
 from utils.agent_utils import create_agent_with_parent_callback
@@ -16,6 +26,9 @@ def user_profile_agent(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含用户投资偏好信息
+        
+    Returns:
+        str: 用户画像分析和投资建议
     """
     logger.info(f"调用用户画像分析专家: {query}")
     

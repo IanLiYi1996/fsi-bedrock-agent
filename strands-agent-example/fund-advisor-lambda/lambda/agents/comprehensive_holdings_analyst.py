@@ -1,3 +1,10 @@
+"""
+综合持仓分析专家模块
+
+此模块提供了综合持仓分析专家工具函数，用于分析基金的持仓结构、行业分布、重仓股以及持仓股票的表现和相关资讯，
+判断基金真实盈利可能性和表现是否与持仓信息相符。
+"""
+
 from strands import Agent, tool
 from typing import Dict, Any
 import sys
@@ -5,7 +12,8 @@ import os
 import logging
 
 # 添加项目根目录到Python路径，以便导入其他模块
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 在Lambda环境中，我们需要调整导入路径
+sys.path.append("/var/task")  # Lambda函数代码的根目录
 
 logger = logging.getLogger(__name__)
 from tools.stock_info import get_stock_info_by_code, get_stock_news_by_code, get_stock_performance_by_code
@@ -21,6 +29,9 @@ def comprehensive_holdings_analyst(query: str) -> str:
     
     Args:
         query: 用户查询，通常包含基金代码
+        
+    Returns:
+        str: 持仓分析和建议
     """
     logger.info(f"调用综合持仓分析专家: {query}")
     
