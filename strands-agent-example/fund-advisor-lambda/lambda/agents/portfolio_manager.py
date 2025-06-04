@@ -21,7 +21,7 @@ from agents.expert_agents import market_trend_expert
 from agents.analysis_agents import manager_analyst, fees_analyst
 from agents.user_profile import user_profile_agent
 from agents.fund_selector import fund_selector_agent
-from strands_tools import mem0_memory, current_time, retrieve
+from strands_tools import current_time, retrieve
 from utils.context_utils import get_current_callback_handler, set_current_callback_handler
 
 logger = logging.getLogger(__name__)
@@ -76,7 +76,6 @@ class PortfolioManagerAgent:
             
             ## 可调用的工具描述
             - knowledge base retrieval: 检索基金投资常识性问题
-            - mem0_memory: 存储用户的投资偏好和历史交互信息
             - current_time: 获取当前时间
             - strategy_performance_expert: 基金策略与业绩专家，负责分析基金的投资策略、风格以及历史业绩、波动性和风险调整收益。
             - comprehensive_holdings_analyst: 综合持仓分析师，负责分析基金持仓股票表现，判断基金真实盈利能力。
@@ -104,7 +103,7 @@ class PortfolioManagerAgent:
 
             请记住，你的建议可能影响用户的财务决策，务必保持专业、负责任的态度。
             """,
-            tools=[mem0_memory, current_time, retrieve, strategy_performance_expert,comprehensive_holdings_analyst,portfolio_allocation_expert,market_trend_expert,manager_analyst,fees_analyst,user_profile_agent,fund_selector_agent
+            tools=[current_time, retrieve, strategy_performance_expert,comprehensive_holdings_analyst,portfolio_allocation_expert,market_trend_expert,manager_analyst,fees_analyst,user_profile_agent,fund_selector_agent
             ],
             load_tools_from_directory=False
         )
