@@ -1,0 +1,8 @@
+{
+    "model": {
+        "provider": "bedrock",
+        "model_id": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+        "region": "us-east-1",
+        "max_tokens": 24000
+    }
+}

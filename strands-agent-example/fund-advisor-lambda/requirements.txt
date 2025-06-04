@@ -1,0 +1,17 @@
+# 基础依赖
+strands>=0.1.0
+strands-tools>=0.1.0
+boto3>=1.28.0
+botocore>=1.31.0
+pydantic>=2.0.0
+typing-extensions>=4.7.0
+
+# MCP相关依赖
+mcp>=0.1.0
+
+# 日志和工具
+python-dotenv>=1.0.0
+loguru>=0.7.0
+
+# AWS Lambda相关
+aws-lambda-powertools>=2.20.0
