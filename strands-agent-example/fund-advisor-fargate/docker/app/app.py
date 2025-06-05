@@ -298,9 +298,12 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 # 如果提供了新的session_id，并且与当前的不同，则更新session_id
                 if new_session_id and new_session_id != session_id:
-                    logger.info(f"WebSocket连接切换会话: {session_id} -> {new_session_id}")
+                    if not session_id:
+                        logger.info(f"WebSocket连接初始会话: {new_session_id}")
+                    else:
+                        logger.info(f"WebSocket连接切换会话: {session_id} -> {new_session_id}")
                     session_id = new_session_id
-                    await websocket.send_json({"type": "session_switched", "session_id": session_id})
+                    await websocket.send_json({"type": "session_info", "session_id": session_id})
                 # 如果没有提供session_id，则创建新会话
                 elif not session_id:
                     session_id = create_session()

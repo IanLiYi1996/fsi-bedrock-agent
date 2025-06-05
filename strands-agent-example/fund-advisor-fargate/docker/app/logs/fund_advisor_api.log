@@ -36,3 +36,112 @@ Traceback (most recent call last):
   File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-fargate/docker/app/auth/session.py", line 88, in get_session
     return memory_sessions.get(session_id)
 NameError: name 'memory_sessions' is not defined
+2025-06-05 13:58:57,351 - app - INFO - WebSocket连接已关闭
+2025-06-05 14:02:08,497 - app - INFO - WebSocket连接切换会话: None -> 12345678
+2025-06-05 14:02:08,498 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:02:08,517 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 14:02:10,185 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:02:10,186 - auth.session - WARNING - 会话不存在，无法获取消息：12345678
+2025-06-05 14:02:10,186 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:02:16,984 - auth.session - ERROR - 更新会话失败：An error occurred (ValidationException) when calling the UpdateItem operation: Invalid UpdateExpression: Attribute name is a reserved keyword; reserved keyword: ttl
+2025-06-05 14:02:27,023 - app - INFO - WebSocket连接切换会话: 12345678 -> 456789
+2025-06-05 14:02:27,023 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:02:27,040 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 14:02:27,507 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:02:27,507 - auth.session - WARNING - 会话不存在，无法获取消息：456789
+2025-06-05 14:02:27,508 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:02:34,035 - auth.session - ERROR - 更新会话失败：An error occurred (ValidationException) when calling the UpdateItem operation: Invalid UpdateExpression: Attribute name is a reserved keyword; reserved keyword: ttl
+2025-06-05 14:03:13,208 - app - INFO - WebSocket连接已关闭
+2025-06-05 14:06:05,352 - app - INFO - WebSocket连接切换会话: None -> 456789
+2025-06-05 14:06:05,353 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:06:05,375 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 14:06:06,834 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:06:06,834 - auth.session - WARNING - 会话不存在，无法获取消息：456789
+2025-06-05 14:06:06,834 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:06:13,085 - auth.session - ERROR - 更新会话失败：An error occurred (ResourceNotFoundException) when calling the UpdateItem operation: Requested resource not found
+2025-06-05 14:07:22,315 - app - INFO - WebSocket连接已关闭
+2025-06-05 14:08:27,695 - app - INFO - WebSocket连接切换会话: None -> 456789
+2025-06-05 14:08:27,698 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:08:27,717 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 14:08:29,612 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:08:29,612 - auth.session - WARNING - 会话不存在，无法获取消息：456789
+2025-06-05 14:08:29,613 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:08:35,878 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:08:35,879 - auth.session - INFO - 会话不存在，创建新会话：456789
+2025-06-05 14:08:36,372 - auth.session - ERROR - 创建会话失败：An error occurred (ResourceNotFoundException) when calling the PutItem operation: Requested resource not found
+2025-06-05 14:09:28,570 - app - INFO - WebSocket连接切换会话: 456789 -> 123456
+2025-06-05 14:09:28,572 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:09:28,595 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 14:09:29,230 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:09:29,231 - auth.session - WARNING - 会话不存在，无法获取消息：123456
+2025-06-05 14:09:29,231 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:09:37,790 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:09:37,791 - auth.session - INFO - 会话不存在，创建新会话：123456
+2025-06-05 14:09:38,263 - auth.session - ERROR - 创建会话失败：An error occurred (ResourceNotFoundException) when calling the PutItem operation: Requested resource not found
+2025-06-05 14:09:56,478 - app - INFO - WebSocket连接切换会话: 123456 -> 456789
+2025-06-05 14:09:56,479 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:10:01,751 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:10:02,187 - auth.session - ERROR - 更新会话失败：An error occurred (ResourceNotFoundException) when calling the UpdateItem operation: Requested resource not found
+2025-06-05 14:10:55,784 - app - INFO - WebSocket连接已关闭
+2025-06-05 14:11:08,197 - app - INFO - WebSocket连接切换会话: None -> 456789
+2025-06-05 14:11:08,197 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:11:08,212 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 14:11:09,759 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:11:09,759 - auth.session - WARNING - 会话不存在，无法获取消息：456789
+2025-06-05 14:11:09,761 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:11:16,527 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 14:11:16,527 - auth.session - INFO - 会话不存在，创建新会话：456789
+2025-06-05 14:11:16,909 - auth.session - ERROR - 创建会话失败：An error occurred (ResourceNotFoundException) when calling the PutItem operation: Requested resource not found
+2025-06-05 14:13:50,242 - app - INFO - WebSocket连接切换会话: None -> 456789
+2025-06-05 14:13:50,243 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:13:50,257 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-06-05 14:13:51,681 - auth.session - WARNING - 会话不存在：456789
+2025-06-05 14:13:51,681 - auth.session - WARNING - 会话不存在，无法获取消息：456789
+2025-06-05 14:13:51,682 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:13:57,701 - auth.session - WARNING - 会话不存在：456789
+2025-06-05 14:13:57,702 - auth.session - INFO - 会话不存在，创建新会话：456789
+2025-06-05 14:13:58,056 - auth.session - INFO - 已创建会话：456789
+2025-06-05 14:14:36,171 - app - INFO - WebSocket连接切换会话: 456789 -> 123456
+2025-06-05 14:14:36,172 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:14:36,194 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-06-05 14:14:36,659 - auth.session - WARNING - 会话不存在：123456
+2025-06-05 14:14:36,659 - auth.session - WARNING - 会话不存在，无法获取消息：123456
+2025-06-05 14:14:36,660 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:14:44,025 - auth.session - WARNING - 会话不存在：123456
+2025-06-05 14:14:44,025 - auth.session - INFO - 会话不存在，创建新会话：123456
+2025-06-05 14:14:44,380 - auth.session - INFO - 已创建会话：123456
+2025-06-05 14:14:55,533 - app - INFO - WebSocket连接切换会话: 123456 -> 456789
+2025-06-05 14:14:55,535 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:15:00,441 - auth.session - INFO - 已获取会话：456789
+2025-06-05 14:15:00,798 - auth.session - INFO - 已更新会话：456789
+2025-06-05 14:16:20,265 - app - INFO - WebSocket连接切换会话: 456789 -> 123456
+2025-06-05 14:16:20,268 - agents.portfolio_manager - INFO - 处理用户查询: 直接回复我今天是什么日子，不用调取工具
+2025-06-05 14:16:23,552 - auth.session - INFO - 已获取会话：123456
+2025-06-05 14:16:23,985 - auth.session - INFO - 已更新会话：123456
+2025-06-05 14:18:56,034 - app - INFO - WebSocket连接已关闭
+2025-06-05 14:20:03,065 - auth.session - INFO - 已创建会话：7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:20:03,065 - app - INFO - WebSocket连接创建新会话: 7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:20:03,066 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:20:03,081 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-06-05 14:20:03,681 - auth.session - INFO - 已获取会话：7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:20:03,682 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 14:20:10,516 - auth.session - INFO - 已获取会话：7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:20:10,873 - auth.session - INFO - 已更新会话：7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:21:12,254 - app - INFO - WebSocket连接切换会话: 7773e4e4-5dc4-4826-ad59-d2815d53fa14 -> test
+2025-06-05 14:21:12,258 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 14:21:12,287 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-06-05 14:21:12,882 - auth.session - WARNING - 会话不存在：test
+2025-06-05 14:21:12,882 - auth.session - WARNING - 会话不存在，无法获取消息：test
+2025-06-05 14:21:12,884 - agents.portfolio_manager - INFO - 处理用户查询: 我是ianleely，hello
+2025-06-05 14:21:29,149 - auth.session - WARNING - 会话不存在：test
+2025-06-05 14:21:29,150 - auth.session - INFO - 会话不存在，创建新会话：test
+2025-06-05 14:21:29,510 - auth.session - INFO - 已创建会话：test
+2025-06-05 14:22:33,255 - app - INFO - WebSocket连接切换会话: test -> 7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:22:33,259 - agents.portfolio_manager - INFO - 处理用户查询: 不要调取工具，告诉我今天是什么日子
+2025-06-05 14:22:38,725 - auth.session - INFO - 已获取会话：7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:22:39,088 - auth.session - INFO - 已更新会话：7773e4e4-5dc4-4826-ad59-d2815d53fa14
+2025-06-05 14:23:09,564 - app - INFO - WebSocket连接切换会话: 7773e4e4-5dc4-4826-ad59-d2815d53fa14 -> test
+2025-06-05 14:23:09,566 - agents.portfolio_manager - INFO - 处理用户查询: 直接回答我是谁
+2025-06-05 14:23:12,349 - auth.session - INFO - 已获取会话：test
+2025-06-05 14:23:12,706 - auth.session - INFO - 已更新会话：test
+2025-06-05 14:30:54,874 - app - INFO - WebSocket连接已关闭
