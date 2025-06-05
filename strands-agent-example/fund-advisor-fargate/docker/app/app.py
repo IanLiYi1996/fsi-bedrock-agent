@@ -8,7 +8,7 @@ import logging
 import asyncio
 from typing import Dict, Any, List, Optional
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect, Depends
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -18,6 +18,10 @@ from pydantic import BaseModel
 sys.path.append("/app")
 from agents.portfolio_manager import PortfolioManagerAgent
 from utils.callback_handlers import StreamingCallbackHandler, LoggingCallbackHandler, EventType
+from auth.session import (
+    create_session, get_session, update_session, delete_session, 
+    add_message_to_session, get_session_messages, clear_session_messages
+)
 
 # 加载环境变量
 load_dotenv()
@@ -31,7 +35,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("/app/logs/fund_advisor_api.log")
+        logging.FileHandler("./logs/fund_advisor_api.log")
     ]
 )
 logger = logging.getLogger(__name__)
@@ -52,9 +56,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 创建投资组合管理Agent
+# 请求模型
 class QueryRequest(BaseModel):
     query: str
+    session_id: Optional[str] = None
     stream: bool = False
     include_events: bool = False
 
@@ -74,8 +79,37 @@ composite_handler = CompositeCallbackHandler([logging_handler])
 # 设置线程本地存储的callback处理器
 set_current_callback_handler(composite_handler)
 
-# 创建投资组合管理Agent，并传入回调处理器
-portfolio_manager = PortfolioManagerAgent(callback_handler=composite_handler)
+# 会话管理
+session_managers = {}
+
+def get_portfolio_manager(session_id: str = None):
+    """
+    获取或创建投资组合管理Agent
+    
+    Args:
+        session_id: 会话ID，如果为None则使用默认会话
+        
+    Returns:
+        PortfolioManagerAgent: 投资组合管理Agent
+    """
+    if not session_id:
+        session_id = "default"
+    
+    if session_id not in session_managers:
+        # 创建新的Agent实例
+        agent = PortfolioManagerAgent(callback_handler=composite_handler)
+        
+        # 加载会话消息
+        messages = get_session_messages(session_id)
+        if messages:
+            # 如果有历史消息，将其直接设置到Agent的messages属性中
+            # 由于PortfolioManagerAgent没有load_messages方法，我们直接设置agent.agent.messages
+            agent.agent.messages = messages
+            logger.info(f"已加载会话消息到Agent: {session_id}, 消息数量: {len(messages)}")
+        
+        session_managers[session_id] = agent
+    
+    return session_managers[session_id]
 
 class HealthResponse(BaseModel):
     status: str
@@ -107,10 +141,19 @@ async def query(request: QueryRequest):
         包含响应的对象
     """
     try:
+        # 获取或创建会话ID
+        session_id = request.session_id
+        if not session_id:
+            session_id = create_session()
+            logger.info(f"已创建新会话: {session_id}")
+        
+        # 获取对应的投资组合管理Agent
+        portfolio_manager = get_portfolio_manager(session_id)
+        
         if request.stream:
             # 流式响应
             return StreamingResponse(
-                stream_response(request.query, request.include_events),
+                stream_response(request.query, request.include_events, session_id),
                 media_type="text/event-stream"
             )
         else:
@@ -125,6 +168,11 @@ async def query(request: QueryRequest):
             # 处理查询
             response = portfolio_manager.process_query(request.query)
             
+            # 保存会话消息
+            # 由于PortfolioManagerAgent没有get_messages方法，我们直接获取agent.agent.messages
+            messages = portfolio_manager.agent.messages
+            update_session(session_id, messages)
+            
             # 恢复原始回调处理器
             portfolio_manager.agent.callback_handler = original_handler
             
@@ -133,18 +181,22 @@ async def query(request: QueryRequest):
         logger.error(f"处理查询时出错: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"处理查询时出错: {str(e)}")
 
-async def stream_response(query: str, include_events: bool = False):
+async def stream_response(query: str, include_events: bool = False, session_id: str = None):
     """
     生成流式响应
     
     Args:
         query: 用户查询
         include_events: 是否包含事件信息
+        session_id: 会话ID
     
     Yields:
         流式响应数据
     """
     try:
+        # 获取对应的投资组合管理Agent
+        portfolio_manager = get_portfolio_manager(session_id)
+        
         # 创建流式回调处理器
         streaming_handler = StreamingCallbackHandler()
         
@@ -153,7 +205,7 @@ async def stream_response(query: str, include_events: bool = False):
         portfolio_manager.agent.callback_handler = streaming_handler
         
         # 创建异步任务处理查询
-        task = asyncio.create_task(process_query_async(query))
+        task = asyncio.create_task(process_query_async(query, session_id))
         
         # 等待任务完成或超时
         while not task.done():
@@ -186,6 +238,11 @@ async def stream_response(query: str, include_events: bool = False):
         if include_events:
             yield f"data: {json.dumps({'type': 'complete', 'content': response})}\n\n"
         
+        # 保存会话消息
+        if session_id:
+            messages = portfolio_manager.agent.messages
+            update_session(session_id, messages)
+        
         # 恢复原始回调处理器
         portfolio_manager.agent.callback_handler = original_handler
     except Exception as e:
@@ -195,16 +252,20 @@ async def stream_response(query: str, include_events: bool = False):
         else:
             yield f"data: 处理查询时出错: {str(e)}\n\n"
 
-async def process_query_async(query: str) -> str:
+async def process_query_async(query: str, session_id: str = None) -> str:
     """
     异步处理用户查询
     
     Args:
         query: 用户查询
+        session_id: 会话ID
     
     Returns:
         处理结果
     """
+    # 获取对应的投资组合管理Agent
+    portfolio_manager = get_portfolio_manager(session_id)
+    
     # 使用线程池执行同步操作
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(None, portfolio_manager.process_query, query)
@@ -219,6 +280,7 @@ async def websocket_endpoint(websocket: WebSocket):
         websocket: WebSocket连接
     """
     await websocket.accept()
+    session_id = None
     
     try:
         while True:
@@ -231,9 +293,26 @@ async def websocket_endpoint(websocket: WebSocket):
                 query = request_data.get("query", "")
                 include_events = request_data.get("include_events", False)
                 
+                # 获取会话ID
+                new_session_id = request_data.get("session_id")
+                
+                # 如果提供了新的session_id，并且与当前的不同，则更新session_id
+                if new_session_id and new_session_id != session_id:
+                    logger.info(f"WebSocket连接切换会话: {session_id} -> {new_session_id}")
+                    session_id = new_session_id
+                    await websocket.send_json({"type": "session_switched", "session_id": session_id})
+                # 如果没有提供session_id，则创建新会话
+                elif not session_id:
+                    session_id = create_session()
+                    logger.info(f"WebSocket连接创建新会话: {session_id}")
+                    await websocket.send_json({"type": "session_created", "session_id": session_id})
+                
                 if not query:
                     await websocket.send_json({"error": "查询不能为空"})
                     continue
+                
+                # 获取对应的投资组合管理Agent
+                portfolio_manager = get_portfolio_manager(session_id)
                 
                 # 创建流式回调处理器
                 streaming_handler = StreamingCallbackHandler()
@@ -243,7 +322,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 portfolio_manager.agent.callback_handler = streaming_handler
                 
                 # 创建异步任务处理查询
-                task = asyncio.create_task(process_query_async(query))
+                task = asyncio.create_task(process_query_async(query, session_id))
                 
                 # 等待任务完成或超时
                 while not task.done():
@@ -278,6 +357,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 else:
                     await websocket.send_text("\n\n最终回复: " + response)
                 
+                # 保存会话消息
+                messages = portfolio_manager.agent.messages
+                update_session(session_id, messages)
+                
                 # 恢复原始回调处理器
                 portfolio_manager.agent.callback_handler = original_handler
             
@@ -293,12 +376,13 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.error(f"WebSocket连接出错: {e}", exc_info=True)
 
 @app.get("/sse")
-async def sse(query: str, include_events: bool = False):
+async def sse(query: str, session_id: Optional[str] = None, include_events: bool = False):
     """
     SSE端点，用于服务器发送事件
     
     Args:
         query: 用户查询
+        session_id: 会话ID
         include_events: 是否包含事件信息
     
     Returns:
@@ -310,11 +394,89 @@ async def sse(query: str, include_events: bool = False):
         "Connection": "keep-alive",
     }
     
+    # 如果没有提供会话ID，则创建新会话
+    if not session_id:
+        session_id = create_session()
+        # 在响应头中添加会话ID
+        headers["X-Session-ID"] = session_id
+    
     return StreamingResponse(
-        stream_response(query, include_events),
+        stream_response(query, include_events, session_id),
         media_type="text/event-stream",
         headers=headers
     )
+
+# 会话管理API
+@app.post("/sessions")
+async def create_new_session():
+    """
+    创建新会话
+    
+    Returns:
+        包含会话ID的对象
+    """
+    session_id = create_session()
+    return {"session_id": session_id}
+
+@app.get("/sessions/{session_id}")
+async def get_session_info(session_id: str):
+    """
+    获取会话信息
+    
+    Args:
+        session_id: 会话ID
+    
+    Returns:
+        会话信息
+    """
+    session = get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail=f"会话不存在: {session_id}")
+    return session
+
+@app.delete("/sessions/{session_id}")
+async def delete_session_endpoint(session_id: str):
+    """
+    删除会话
+    
+    Args:
+        session_id: 会话ID
+    
+    Returns:
+        操作结果
+    """
+    success = delete_session(session_id)
+    if not success:
+        raise HTTPException(status_code=500, detail=f"删除会话失败: {session_id}")
+    
+    # 如果会话管理器中存在该会话，也需要删除
+    if session_id in session_managers:
+        del session_managers[session_id]
+    
+    return {"status": "success", "message": f"会话已删除: {session_id}"}
+
+@app.delete("/sessions/{session_id}/messages")
+async def clear_session_messages_endpoint(session_id: str):
+    """
+    清除会话消息
+    
+    Args:
+        session_id: 会话ID
+    
+    Returns:
+        操作结果
+    """
+    success = clear_session_messages(session_id)
+    if not success:
+        raise HTTPException(status_code=500, detail=f"清除会话消息失败: {session_id}")
+    
+    # 如果会话管理器中存在该会话，也需要重置其消息
+    if session_id in session_managers:
+        portfolio_manager = session_managers[session_id]
+        # 由于PortfolioManagerAgent没有reset_messages方法，我们直接设置agent.agent.messages为空列表
+        portfolio_manager.agent.messages = []
+    
+    return {"status": "success", "message": f"会话消息已清除: {session_id}"}
 
 if __name__ == '__main__':
     # 这部分代码在使用uvicorn启动时不会执行

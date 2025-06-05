@@ -4,3 +4,35 @@
 2025-06-03 13:49:07,249 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
 2025-06-03 13:50:34,878 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
 2025-06-03 13:51:00,262 - agents.portfolio_manager - INFO - 处理用户查询: 今天是什么日子
+2025-06-05 13:57:20,245 - app - INFO - WebSocket连接切换会话: None -> 12345678
+2025-06-05 13:57:20,246 - agents.portfolio_manager - INFO - 初始化投资组合管理Agent
+2025-06-05 13:57:20,272 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-06-05 13:57:21,754 - auth.session - ERROR - 获取会话失败：An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+2025-06-05 13:57:21,754 - app - ERROR - WebSocket处理查询时出错: name 'memory_sessions' is not defined
+Traceback (most recent call last):
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-fargate/docker/app/auth/session.py", line 77, in get_session
+    response = table.get_item(Key={'session_id': session_id})
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/boto3/resources/factory.py", line 581, in do_action
+    response = action(self, *args, **kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/boto3/resources/action.py", line 88, in __call__
+    response = getattr(parent.meta.client, operation_name)(*args, **params)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/botocore/client.py", line 570, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/botocore/context.py", line 124, in wrapper
+    return func(*args, **kwargs)
+  File "/opt/anaconda3/envs/dev/lib/python3.10/site-packages/botocore/client.py", line 1031, in _make_api_call
+    raise error_class(parsed_response, operation_name)
+botocore.errorfactory.ResourceNotFoundException: An error occurred (ResourceNotFoundException) when calling the GetItem operation: Requested resource not found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-fargate/docker/app/app.py", line 315, in websocket_endpoint
+    portfolio_manager = get_portfolio_manager(session_id)
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-fargate/docker/app/app.py", line 103, in get_portfolio_manager
+    messages = get_session_messages(session_id)
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-fargate/docker/app/auth/session.py", line 187, in get_session_messages
+    session = get_session(session_id)
+  File "/Users/ianleely/Documents/Codes/fsi-bedrock-agent/strands-agent-example/fund-advisor-fargate/docker/app/auth/session.py", line 88, in get_session
+    return memory_sessions.get(session_id)
+NameError: name 'memory_sessions' is not defined
